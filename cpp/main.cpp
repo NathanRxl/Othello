@@ -1,12 +1,12 @@
 #include <QApplication>
-#include "ma_fenetre.h"
+#include "HomeWindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
  
-    MaFenetre fenetre;
-    fenetre.show();
+    HomeWindow homeWindow;
+    homeWindow.show();
  
     return app.exec();
 }
