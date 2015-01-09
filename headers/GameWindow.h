@@ -15,7 +15,7 @@ class GameWindow : public QWidget
 
     Q_OBJECT
     public slots:
-    void playPawn();
+    void playPawn(int position);
 
 };
  

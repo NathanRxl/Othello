@@ -6,11 +6,12 @@
 class ClickableLabel : public QLabel
 {
 	public:
-	ClickableLabel(QWidget *parent):QLabel(parent){};
+	int position;
+	ClickableLabel(QWidget *parent, int i):QLabel(parent){position=i;};
 
 	Q_OBJECT
 	signals:
-	void clicked();
+	void clicked(int);
  
 	protected:
 	void mousePressEvent(QMouseEvent *event) ;
