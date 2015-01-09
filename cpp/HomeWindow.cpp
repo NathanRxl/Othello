@@ -1,5 +1,6 @@
 #include "HomeWindow.h"
 #include "GameWindow.h"
+#include "utils.h"
  
 HomeWindow::HomeWindow() : QWidget()
 {
@@ -19,4 +20,5 @@ void HomeWindow::open_gameWindow(void)
     GameWindow *gameWindow =new GameWindow;
 	this->hide();
 	gameWindow->show();
+	initGame((*gameWindow).othellier_squares);
 }

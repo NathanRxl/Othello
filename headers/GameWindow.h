@@ -1,19 +1,21 @@
 #ifndef GAMEWINDOW_H
 #define GAMEWINDOW_H
 
+#include <QPushButton>
 #include "ClickableLabel.h"
 
 class GameWindow : public QWidget
 {
 	private:
-	ClickableLabel *othellier_squares[8][8];
-	
+	QPushButton* passButton;
+
     public:
+	QList<ClickableLabel*> othellier_squares;
     GameWindow();
 
     Q_OBJECT
     public slots:
-    void playPawn(void);
+    void playPawn();
 
 };
  
