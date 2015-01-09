@@ -1,6 +1,3 @@
-<<<<<<< HEAD
 Othello
-=======
-=======
-# Othello
->>>>>>> 198190bd5b6fc16fae69b01f2bb1a0d654f19ec5
+
+Lors de la construction du projet, ne pas oublier de copier/coller le dossier "pictures" dans le dossier du build.
