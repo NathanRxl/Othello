@@ -11,6 +11,7 @@ class GameWindow : public QWidget
 
     public:
 	QList<ClickableLabel*> othellier_squares;
+	int player_turn;
     GameWindow();
 
     Q_OBJECT

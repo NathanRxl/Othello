@@ -1,11 +1,13 @@
 #include <QGridLayout>
 #include "GameWindow.h"
+#include "utils.h"
 #include <iostream>
 
 GameWindow::GameWindow():QWidget()
 {
 	setFixedSize(400, 400);
 	setWindowTitle("Othello - Jeu en cours");
+	player_turn=1;
 
 	QGridLayout *gameWindowLayout=new QGridLayout();
 
@@ -17,9 +19,9 @@ GameWindow::GameWindow():QWidget()
          gameWindowLayout->addWidget(othellier_squares[8*i+j], i, j);
         }
 
-	//Test de la taille de la Liste
-	std::cout << othellier_squares.size() << std::endl;
-	//----//
+															//TEST de la taille de la Liste//
+															std::cout << othellier_squares.size() << std::endl;
+															//TEST//
 
 	gameWindowLayout->setHorizontalSpacing(1);
 	gameWindowLayout->setVerticalSpacing(1);
@@ -30,10 +32,28 @@ GameWindow::GameWindow():QWidget()
 	setLayout(gameWindowLayout);
 
 	for (int position=0; position<64; position++)
+	{
 		QObject::connect(othellier_squares[position], SIGNAL(clicked(int)), this, SLOT(playPawn(int)));
+	}
 }
 
 void GameWindow::playPawn(int position)
 {
-	othellier_squares[position]->setPixmap(QPixmap("pictures/black_pawn.png"));
+	if(eligible_square(othellier_squares, position))
+	{
+		if(player_turn==1)
+		{
+			othellier_squares[position]->setPixmap(QPixmap("pictures/black_pawn.png"));
+			othellier_squares[position]->occupied=true;
+			player_turn=0;
+			std::cout << "Tour du joueur: " << player_turn << std::endl;
+		}
+		else
+		{
+			othellier_squares[position]->setPixmap(QPixmap("pictures/white_pawn.png"));
+			othellier_squares[position]->occupied=true;
+			player_turn=1;
+			std::cout << "Tour du joueur: " << player_turn << std::endl;
+		}
+	}
 }

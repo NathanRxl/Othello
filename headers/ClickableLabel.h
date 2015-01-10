@@ -7,7 +7,9 @@ class ClickableLabel : public QLabel
 {
 	public:
 	int position;
-	ClickableLabel(QWidget *parent, int i):QLabel(parent){position=i;};
+	bool occupied; //if a pawn is on the square, occupied == true, else occupied == false.
+	int pawn_color; //if occupied, then pawn_color == 1 if black, 0 if white. if unoccupied, pawn_color == -1.
+	ClickableLabel(QWidget *parent, int i):QLabel(parent){position=i; occupied=false; pawn_color=-1;};
 
 	Q_OBJECT
 	signals:
