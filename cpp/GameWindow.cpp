@@ -1,6 +1,7 @@
 #include <QGridLayout>
 #include "GameWindow.h"
 #include "utils.h"
+#include "Game.h"
 #include <iostream>
 
 GameWindow::GameWindow():QWidget()
@@ -31,29 +32,48 @@ GameWindow::GameWindow():QWidget()
 
 	setLayout(gameWindowLayout);
 
+
+
 	for (int position=0; position<64; position++)
 	{
 		QObject::connect(othellier_squares[position], SIGNAL(clicked(int)), this, SLOT(playPawn(int)));
 	}
 }
 
+void GameWindow::display_squares(int* othellier)
+{
+	for(int i=0; i<8; i++)
+		for(int j=0; j<8; j++)
+		{
+			if (othellier[8*i+j] == -1)
+				othellier_squares[8*i+j]->setPixmap(QPixmap("pictures/empty_square.png"));
+
+			if (othellier[8*i+j] == 0)
+				othellier_squares[8*i+j]->setPixmap(QPixmap("pictures/white_pawn.png"));
+
+			if (othellier[8*i+j] == 1)
+				othellier_squares[8*i+j]->setPixmap(QPixmap("pictures/black_pawn.png"));
+		}
+}
+
+
 void GameWindow::playPawn(int position)
 {
-	if(eligible_square(othellier_squares, position))
+	if(Game.eligible_square(position))
 	{
-		if(player_turn==1)
+		if(Game.player_turn==1)
 		{
-			othellier_squares[position]->setPixmap(QPixmap("pictures/black_pawn.png"));
-			othellier_squares[position]->occupied=true;
-			player_turn=0;
-			std::cout << "Tour du joueur: " << player_turn << std::endl;
+			Game.othellier[position]=1;
+			Game.player_turn=0;
+			std::cout << "Tour du joueur: " << Game.player_turn << std::endl;
 		}
 		else
 		{
-			othellier_squares[position]->setPixmap(QPixmap("pictures/white_pawn.png"));
-			othellier_squares[position]->occupied=true;
-			player_turn=1;
-			std::cout << "Tour du joueur: " << player_turn << std::endl;
+			Game.othellier[position]=0;
+			Game.player_turn=1;
+			std::cout << "Tour du joueur: " << Game.player_turn << std::endl;
 		}
 	}
+	
+	display_squares(Game.othellier);
 }

@@ -9,11 +9,13 @@ SET(Othello_SOURCES cpp/main.cpp
 					cpp/utils.cpp
 					cpp/HomeWindow.cpp
 					cpp/GameWindow.cpp
-					cpp/ClickableLabel.cpp)
+					cpp/ClickableLabel.cpp
+                    cpp/Game.cpp)
 SET(Othello_HEADERS headers/utils.h
 					headers/HomeWindow.h
 					headers/GameWindow.h
-					headers/ClickableLabel.h)
+					headers/ClickableLabel.h
+                    headers/Game.h)
 
 ADD_EXECUTABLE(Othello ${Othello_SOURCES} ${Othello_HEADERS})
 TARGET_LINK_LIBRARIES(Othello Qt5::Widgets)
