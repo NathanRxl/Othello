@@ -59,21 +59,7 @@ void GameWindow::display_squares(int* othellier)
 
 void GameWindow::playPawn(int position)
 {
-	if(Game.eligible_square(position))
-	{
-		if(Game.player_turn==1)
-		{
-			Game.othellier[position]=1;
-			Game.player_turn=0;
-			std::cout << "Tour du joueur: " << Game.player_turn << std::endl;
-		}
-		else
-		{
-			Game.othellier[position]=0;
-			Game.player_turn=1;
-			std::cout << "Tour du joueur: " << Game.player_turn << std::endl;
-		}
-	}
+	Game.play_position(position);
 	
 	display_squares(Game.othellier);
 }
