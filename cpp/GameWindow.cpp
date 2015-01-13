@@ -8,7 +8,6 @@ GameWindow::GameWindow():QWidget()
 {
 	setFixedSize(400, 400);
 	setWindowTitle("Othello - Jeu en cours");
-	player_turn=1;
 
 	QGridLayout *gameWindowLayout=new QGridLayout();
 
