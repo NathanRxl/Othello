@@ -7,15 +7,15 @@
 class HomeWindow : public QWidget
 {
 	private:
-	QLabel *LogoPicture;
-	QPushButton *newGameButton;
+	QLabel* _LogoPicture;
+	QPushButton* _newGameButton;
 
     public:
     HomeWindow();   
 
 	Q_OBJECT
     public slots:
-    void open_gameWindow(void);
+    void openGameWindow(void);
 };
 
 #endif

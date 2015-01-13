@@ -3,16 +3,16 @@
 
 #include <QPushButton>
 #include "ClickableLabel.h"
-#include "Game.h"
+#include "GameSystem.h"
 
 class GameWindow : public QWidget
 {
 	private:
-	QPushButton* passButton;
+	QPushButton* _passButton;
 
     public:
-	QList<ClickableLabel*> othellier_squares;
-	GameSystem Game;
+	QList<ClickableLabel*> _othellierSquares;
+	GameSystem _gameSystem;
 
     GameWindow();
 	void display_squares(int* othellier);

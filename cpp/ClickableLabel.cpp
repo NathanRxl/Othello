@@ -2,5 +2,5 @@
 
 void ClickableLabel::mousePressEvent (QMouseEvent *event)
 {
-      emit clicked(position);
+      emit clicked(_position);
 }

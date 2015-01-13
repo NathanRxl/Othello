@@ -1,25 +1,25 @@
 #include "HomeWindow.h"
 #include "GameWindow.h"
 #include "utils.h"
-#include "Game.h"
+#include "GameSystem.h"
  
 HomeWindow::HomeWindow() : QWidget()
 {
     setFixedSize(400, 400);
 	setWindowTitle("Othello - Accueil");
 
-	LogoPicture = new QLabel(this);
-    LogoPicture->setPixmap(QPixmap("pictures/othello_logo.png"));
+	_LogoPicture = new QLabel(this);
+    _LogoPicture->setPixmap(QPixmap("pictures/othello_logo.png"));
  
-	newGameButton = new QPushButton("Nouvelle Partie", this);
-    newGameButton->setGeometry(150, 200, 100, 50);
-	QObject::connect(newGameButton, SIGNAL(clicked()), this, SLOT(open_gameWindow(void)));
+	_newGameButton = new QPushButton("Nouvelle Partie", this);
+    _newGameButton->setGeometry(150, 200, 100, 50);
+	QObject::connect(_newGameButton, SIGNAL(clicked()), this, SLOT(openGameWindow(void)));
 }
 
-void HomeWindow::open_gameWindow(void)
+void HomeWindow::openGameWindow(void)
 {
     GameWindow *gameWindow =new GameWindow;
 	this->hide();
 	gameWindow->show();
-	initGame((*gameWindow).othellier_squares);
+	gameWindow->display_squares(gameWindow->_gameSystem._othellierSystem);
 }

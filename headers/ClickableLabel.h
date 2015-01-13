@@ -6,8 +6,8 @@
 class ClickableLabel : public QLabel
 {
 	public:
-	int position;
-	ClickableLabel(QWidget *parent, int i):QLabel(parent){position=i;};
+	int _position;
+	ClickableLabel(QWidget *parent, int i):QLabel(parent){_position=i;};
 
 	Q_OBJECT
 	signals:

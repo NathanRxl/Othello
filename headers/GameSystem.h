@@ -1,12 +1,12 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAMESYSTEM_H
+#define GAMESYSTEM_H
 
 
 class GameSystem
 {
 	public:
-	int* othellier; //[i]==1 if black, [i]==0 if white, [i]==-1 if unoccupied
-	int player_turn;
+	int* _othellierSystem; //[i]==1 if black, [i]==0 if white, [i]==-1 if unoccupied
+	int _playerTurn;
 
 	GameSystem();
 	bool exploration(int position, int direction);
