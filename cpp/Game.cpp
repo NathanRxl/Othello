@@ -31,15 +31,20 @@ bool GameSystem::exploration(int position, int direction)
 	//This function returns true if position is eligible
 	//direction: -1=up, +7=up+right, +8=right, +9=down+right
 	//+1=down, -7=down+left, -8=left, -9=up+left
-	int moving_position=position;
-
-	while((othellier[moving_position+direction] == 1-player_turn) && testPosition(moving_position+direction))
-		moving_position+=direction;
-	
-	if (othellier[moving_position] == player_turn)
-		return true;
-	else
+	if (testPosition(position+direction) == false)
 		return false;
+	else
+	{
+		int moving_position=position+direction;
+
+		while((othellier[moving_position] == 1-player_turn) && testPosition(moving_position))
+			moving_position+=direction;
+	
+		if (othellier[moving_position] == player_turn)
+			return true;
+		else
+			return false;
+	}
 }
 
 bool GameSystem::eligible_square(int position)
@@ -57,6 +62,8 @@ bool GameSystem::eligible_square(int position)
 		b[5]=exploration(position,7);
 		b[6]=exploration(position,8);
 		b[7]=exploration(position,9);
+
+		std::cout<<b[7]<<std::endl; //Pour faire des tests
 
 		bool return_value=false;
 		for(int i=0; i<8; i++)
