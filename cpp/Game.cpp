@@ -37,7 +37,7 @@ bool GameSystem::exploration(int position, int direction)
 	{
 		int moving_position=position+direction;
 
-		while((othellier[moving_position] == 1-player_turn) && testPosition(moving_position))
+		while((othellier[moving_position+direction] == 1-player_turn) && testPosition(moving_position+direction))
 			moving_position+=direction;
 	
 		if (othellier[moving_position] == player_turn)
@@ -63,7 +63,7 @@ bool GameSystem::eligible_square(int position)
 		b[6]=exploration(position,8);
 		b[7]=exploration(position,9);
 
-		std::cout<<b[7]<<std::endl; //Pour faire des tests
+		std::cout<<b[7]<<std::endl;
 
 		bool return_value=false;
 		for(int i=0; i<8; i++)
