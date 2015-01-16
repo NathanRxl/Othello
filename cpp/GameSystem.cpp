@@ -38,8 +38,8 @@ bool GameSystem::exploration(int position, int direction)
 	//	          right =      8*  1 +  0  =  8
 	//	          up_right =   8*  1 +(-1) =  7
 	//This function returns true if [position] is eligible
-
-	if (possible_position(position+direction) == false)
+	std::cout<<position<<std::endl;
+	if (possible_position(position+direction) == false || (_othellierSystem[position+direction] != 1-_playerTurn))
 		return false;
 	else
 	{
@@ -48,10 +48,18 @@ bool GameSystem::exploration(int position, int direction)
 		while((_othellierSystem[moving_position+direction] == 1-_playerTurn) && possible_position(moving_position+direction))
 			moving_position += direction;
 	
-		if (_othellierSystem[moving_position] == _playerTurn)
-			return true;
+
+		if (possible_position(moving_position))
+		{
+			if (_othellierSystem[moving_position+direction] == _playerTurn)
+				return true;
+			else
+				return false;
+		}
+
 		else
 			return false;
+
 	}
 }
 

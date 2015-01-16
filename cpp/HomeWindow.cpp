@@ -1,6 +1,5 @@
 #include "HomeWindow.h"
 #include "GameWindow.h"
-#include "utils.h"
 #include "GameSystem.h"
  
 HomeWindow::HomeWindow() : QWidget()

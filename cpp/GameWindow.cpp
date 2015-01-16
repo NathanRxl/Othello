@@ -1,6 +1,5 @@
 #include <QGridLayout>
 #include "GameWindow.h"
-#include "utils.h"
 #include "GameSystem.h"
 #include <iostream>
 
@@ -16,7 +15,7 @@ GameWindow::GameWindow():QWidget()
 		{
 		 _othellierSquares.append(new ClickableLabel(this, 8*i+j));
 		 _othellierSquares[8*i+j]->setPixmap(QPixmap("pictures/empty_square.png"));
-         gameWindowLayout->addWidget(_othellierSquares[8*i+j], i, j);
+         gameWindowLayout->addWidget(_othellierSquares[8*i+j], j, i);
         }
 
 															//TEST de la taille de la Liste//
