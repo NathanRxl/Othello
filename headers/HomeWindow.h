@@ -9,6 +9,7 @@ class HomeWindow : public QWidget
 	private:
 	QLabel* _LogoPicture;
 	QPushButton* _newGameButton;
+	QPushButton* _settingsButton;
 
     public:
     HomeWindow();   
@@ -16,6 +17,7 @@ class HomeWindow : public QWidget
 	Q_OBJECT
     public slots:
     void openGameWindow(void);
+	void openSettings(void);
 };
 
 #endif

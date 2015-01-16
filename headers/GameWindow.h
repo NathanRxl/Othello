@@ -9,6 +9,7 @@ class GameWindow : public QWidget
 {
 	private:
 	QPushButton* _passButton;
+	QPushButton* _newGameButton;
 
     public:
 	QList<ClickableLabel*> _othellierSquares;
@@ -20,6 +21,8 @@ class GameWindow : public QWidget
     Q_OBJECT
     public slots:
     void playPawn(int position);
+	void newGame();
+	void pass();
 
 };
  

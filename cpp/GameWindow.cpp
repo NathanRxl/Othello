@@ -1,39 +1,54 @@
 #include <QGridLayout>
+#include <QGroupBox>
 #include "GameWindow.h"
 #include "GameSystem.h"
 #include <iostream>
 
 GameWindow::GameWindow():QWidget()
 {
-	setFixedSize(400, 400);
+	setFixedSize(430, 500);
 	setWindowTitle("Othello - Jeu en cours");
 
-	QGridLayout *gameWindowLayout=new QGridLayout();
+	QVBoxLayout *gameWindowLayout = new QVBoxLayout();
 
+	QGroupBox *othellierGroupBox = new QGroupBox();
+	QGridLayout *othellierLayout = new QGridLayout();
 	for(int i=0; i<8; i++)
 		for(int j=0; j<8; j++)
 		{
 		 _othellierSquares.append(new ClickableLabel(this, 8*i+j));
 		 _othellierSquares[8*i+j]->setPixmap(QPixmap("pictures/empty_square.png"));
-         gameWindowLayout->addWidget(_othellierSquares[8*i+j], j, i);
+         othellierLayout->addWidget(_othellierSquares[8*i+j], j, i);
         }
 
 															//TEST de la taille de la Liste//
 															std::cout << _othellierSquares.size() << std::endl;
 															//TEST//
-
-	gameWindowLayout->setHorizontalSpacing(1);
-	gameWindowLayout->setVerticalSpacing(1);
-
-	//_passButton = new QPushButton("Passer", this);
-    //_passButton->setGeometry(150, 450, 100, 50);
-
-	setLayout(gameWindowLayout);
+	othellierLayout->setHorizontalSpacing(1);
+	othellierLayout->setVerticalSpacing(1);
 
 	for (int position=0; position<64; position++)
 	{
 		QObject::connect(_othellierSquares[position], SIGNAL(clicked(int)), this, SLOT(playPawn(int)));
 	}
+
+	othellierGroupBox->setLayout(othellierLayout);
+
+	QGroupBox *buttonsGroupBox = new QGroupBox();
+	QVBoxLayout *buttonsLayout = new QVBoxLayout();
+	_passButton = new QPushButton("Passer", this);
+	QObject::connect(_passButton, SIGNAL(clicked()), this, SLOT(pass()));
+	_passButton->setEnabled(true);
+	buttonsLayout->addWidget(_passButton);
+	_newGameButton = new QPushButton("Nouvelle Partie", this);
+	QObject::connect(_newGameButton, SIGNAL(clicked()), this, SLOT(newGame(void)));
+	_newGameButton->setEnabled(false);
+	buttonsLayout->addWidget(_newGameButton);
+	buttonsGroupBox->setLayout(buttonsLayout);
+
+	gameWindowLayout->addWidget(othellierGroupBox);
+	gameWindowLayout->addWidget(buttonsGroupBox);
+	setLayout(gameWindowLayout);
 }
 
 void GameWindow::display_squares(int* othellier_system)
@@ -50,6 +65,20 @@ void GameWindow::display_squares(int* othellier_system)
 				_othellierSquares[8*i+j]->setPixmap(QPixmap("pictures/black_pawn.png"));
 		}
 	}
+
+	for (int position=0; position<64; position++)
+	{
+		if (_gameSystem._othellierSystem[position] == -1)
+		{
+			if (_gameSystem.eligible_square(position, true) == true)
+			{
+				return;
+			}
+		}
+	}
+
+	_passButton->setEnabled(false);
+	_newGameButton->setEnabled(true);
 }
 
 void GameWindow::playPawn(int position)
@@ -59,4 +88,18 @@ void GameWindow::playPawn(int position)
 		_gameSystem.play_position(position);
 		display_squares(_gameSystem._othellierSystem);
 	}
+}
+
+void GameWindow::newGame()
+{
+    _gameSystem.init_game();
+	display_squares(_gameSystem._othellierSystem);
+	_passButton->setEnabled(true);
+	_newGameButton->setEnabled(false);
+}
+
+void GameWindow::pass()
+{
+	_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
+	std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
 }
