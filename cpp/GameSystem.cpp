@@ -52,7 +52,14 @@ bool GameSystem::exploration(int position, int direction)
 		if (possible_position(moving_position))
 		{
 			if (_othellierSystem[moving_position+direction] == _playerTurn)
+			{
+				while(_othellierSystem[moving_position] == 1-_playerTurn)
+				{
+					_othellierSystem[moving_position] = _playerTurn;
+					moving_position -= direction;
+				}
 				return true;
+			}
 			else
 				return false;
 		}
