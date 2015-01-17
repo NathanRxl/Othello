@@ -78,21 +78,18 @@ void GameWindow::display_squares(int* othellier_system)
 
 	else
 	{
-		for (int position=0; position<64; position++)
+		if(_gameSystem._nbOfBlack+_gameSystem._nbOfWhite == 64)
 		{
-			if (othellier_system[position] == -1) //Il reste une case jouable
-				return;
+			//Il ne reste aucune case jouable
+			_passButton->setEnabled(false);
+			_newGameButton->setEnabled(true);
+			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
+			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
+			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
 		}
-
-		//Il ne reste aucune case jouable
-		_passButton->setEnabled(false);
-		_newGameButton->setEnabled(true);
-		if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
-			std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
-		if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
-			std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
-		if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
-			std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
 	}
 
 }
