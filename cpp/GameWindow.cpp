@@ -21,9 +21,9 @@ GameWindow::GameWindow():QWidget()
          othellierLayout->addWidget(_othellierSquares[8*i+j], j, i);
         }
 
-															//TEST de la taille de la Liste//
-															std::cout << _othellierSquares.size() << std::endl;
-															//TEST//
+												//TEST de la taille de la Liste//
+												std::cout << "Taille de l'othellier: " << _othellierSquares.size() << std::endl;
+												//TEST//
 	othellierLayout->setHorizontalSpacing(1);
 	othellierLayout->setVerticalSpacing(1);
 
@@ -66,19 +66,11 @@ void GameWindow::display_squares(int* othellier_system)
 		}
 	}
 
-	for (int position=0; position<64; position++)
+	if (_gameSystem._nbOfBlack == 0 || _gameSystem._nbOfWhite == 0)
 	{
-		if (_gameSystem._othellierSystem[position] == -1)
-		{
-			if (_gameSystem.eligible_square(position, true) == true)
-			{
-				return;
-			}
-		}
+		_passButton->setEnabled(false);
+		_newGameButton->setEnabled(true);
 	}
-
-	_passButton->setEnabled(false);
-	_newGameButton->setEnabled(true);
 }
 
 void GameWindow::playPawn(int position)
