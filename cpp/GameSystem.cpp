@@ -25,10 +25,13 @@ void GameSystem::init_game(){
 
 }
 
-bool possible_position(int position) //Tests whether [position] is in the board
+bool possible_position(int position, int direction) //Tests whether [position] is in the board
 {
-	bool b;
-	b = (position < 64) && (position >= 0);
+	bool b=true;
+	if (abs((position%8) - ((position+direction)%8)) > 1) //Exiting the frame through upper or lower edge.
+		b=false;
+	if (abs((position/8) - ((position+direction)/8)) > 1)//Exiting the frame through right or left edge.
+		b=false;
 	return b;
 }
 
@@ -48,18 +51,18 @@ bool GameSystem::exploration(int position, int direction)
 
 	int moving_position = position+direction;
 
-	if (possible_position(moving_position) == false || (_othellierSystem[moving_position] != 1-_playerTurn))
+	if (possible_position(position,direction) == false || (_othellierSystem[moving_position] != 1-_playerTurn))
 		return false;
 	else
 	{
 
-		while((_othellierSystem[moving_position+direction] == 1-_playerTurn) && possible_position(moving_position+direction))
+		while((_othellierSystem[moving_position+direction] == 1-_playerTurn) && possible_position(moving_position,direction))
 		{
 			moving_position += direction;
 		}
 	
 
-		if (possible_position(moving_position))
+		if (possible_position(moving_position,direction))
 		{
 			if (_othellierSystem[moving_position+direction] == _playerTurn)
 			{
@@ -83,6 +86,9 @@ bool GameSystem::exploration(int position, int direction)
 
 				return true;
 			}
+
+			else
+				return false;
 		}
 		else
 			return false;
