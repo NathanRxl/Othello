@@ -70,7 +70,31 @@ void GameWindow::display_squares(int* othellier_system)
 	{
 		_passButton->setEnabled(false);
 		_newGameButton->setEnabled(true);
+		if (_gameSystem._nbOfBlack == 0)
+			std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
+		else
+			std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
 	}
+
+	else
+	{
+		for (int position=0; position<64; position++)
+		{
+			if (othellier_system[position] == -1) //Il reste une case jouable
+				return;
+		}
+
+		//Il ne reste aucune case jouable
+		_passButton->setEnabled(false);
+		_newGameButton->setEnabled(true);
+		if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
+			std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
+		if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
+			std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
+		if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
+			std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
+	}
+
 }
 
 void GameWindow::playPawn(int position)

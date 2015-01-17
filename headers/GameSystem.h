@@ -15,6 +15,7 @@ class GameSystem
 	bool exploration(int position, int direction);
 	bool eligible_square(int position);
 	void play_position(int position);
+	//bool no_possible_play();
 
 };
 

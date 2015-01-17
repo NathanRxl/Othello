@@ -54,7 +54,9 @@ bool GameSystem::exploration(int position, int direction)
 	{
 
 		while((_othellierSystem[moving_position+direction] == 1-_playerTurn) && possible_position(moving_position+direction))
+		{
 			moving_position += direction;
+		}
 	
 
 		if (possible_position(moving_position))
@@ -81,10 +83,7 @@ bool GameSystem::exploration(int position, int direction)
 
 				return true;
 			}
-			else
-				return false;
 		}
-
 		else
 			return false;
 
@@ -93,10 +92,12 @@ bool GameSystem::exploration(int position, int direction)
 
 bool GameSystem::eligible_square(int position)
 {
+																					//if(with_flip == true)
 																						std::cout << "Position " << position;
 
 	if(_othellierSystem[position] != -1)
 	{
+																					//if(with_flip == true)
 																						std::cout << " occupied" << std::endl;
 		return false;
 	}
@@ -127,11 +128,11 @@ bool GameSystem::eligible_square(int position)
 			if(b[i] == true)
 				return_value = true;
 		}
-
-																		if (return_value)
-																			std::cout << " eligible? true" << std::endl;
-																		else
-																			std::cout << " eligible? false" << std::endl;
+																		//if(with_flip == true){
+																			if (return_value)
+																				std::cout << " eligible? true" << std::endl;
+																			else
+																				std::cout << " eligible? false" << std::endl;//}
 
 		return return_value;
 }
@@ -145,8 +146,8 @@ void GameSystem::play_position(int position)
 		_nbOfBlack = _nbOfBlack + 1;
 		_playerTurn = 0;
 		std::cout << "Tour du joueur: " << _playerTurn << std::endl;
-		std::cout << "Number of Black: " << _nbOfBlack << std::endl;
-		std::cout << "Number of White: " << _nbOfWhite << std::endl << std::endl;
+		std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
+		std::cout << "Nombre de Blancs: " << _nbOfWhite << std::endl << std::endl;
 	}
 	else
 	{
@@ -154,7 +155,21 @@ void GameSystem::play_position(int position)
 		_nbOfWhite = _nbOfWhite + 1;
 		_playerTurn = 1;
 		std::cout << "Tour du joueur: " << _playerTurn << std::endl;
-		std::cout << "Number of Black: " << _nbOfBlack << std::endl;
-		std::cout << "Number of White: " << _nbOfWhite << std::endl << std::endl;
+		std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
+		std::cout << "Nombre de Blancs: " << _nbOfWhite << std::endl << std::endl;
 	}
 }
+
+/*bool GameSystem::no_possible_play()
+{
+	for(int position=0; position<64; position++)
+	{
+		if(_othellierSystem[position] == -1)
+		{
+			if(eligible_square(position) == true)
+				return false;
+		}
+	}
+
+	return true;
+}*/
