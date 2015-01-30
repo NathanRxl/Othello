@@ -12,12 +12,11 @@ class HomeWindow : public QWidget
 	QPushButton* _settingsButton;
 
     public:
-    HomeWindow();   
+    HomeWindow();
 
 	Q_OBJECT
     public slots:
     void openGameWindow(void);
-	void openSettings(void);
 };
 
 #endif

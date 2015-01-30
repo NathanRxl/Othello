@@ -1,7 +1,6 @@
 #ifndef GAMESYSTEM_H
 #define GAMESYSTEM_H
 
-
 class GameSystem
 {
 	public:
@@ -15,7 +14,7 @@ class GameSystem
 	bool exploration(int position, int direction);
 	bool eligible_square(int position);
 	void play_position(int position);
-	//bool no_possible_play();
+	int min_max(); //Algorithme de l'IA
 
 };
 

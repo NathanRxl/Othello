@@ -1,6 +1,8 @@
 #include "GameSystem.h"
 #include <iostream>
 
+#include <windows.h>
+
 GameSystem::GameSystem()
 {
 	_othellierSystem = new int[64];
@@ -51,17 +53,14 @@ bool GameSystem::exploration(int position, int direction)
 
 	int moving_position = position+direction;
 
-	if (possible_position(position,direction) == false || (_othellierSystem[moving_position] != 1-_playerTurn))
+	if (possible_position(position, direction) == false || (_othellierSystem[moving_position] != 1-_playerTurn))
 		return false;
 	else
 	{
-
-		while((_othellierSystem[moving_position+direction] == 1-_playerTurn) && possible_position(moving_position,direction))
+		while((_othellierSystem[moving_position+direction] == 1-_playerTurn) && possible_position(moving_position, direction))
 		{
 			moving_position += direction;
 		}
-	
-
 		if (possible_position(moving_position,direction))
 		{
 			if (_othellierSystem[moving_position+direction] == _playerTurn)
@@ -70,29 +69,18 @@ bool GameSystem::exploration(int position, int direction)
 				{
 					_othellierSystem[moving_position] = _playerTurn;
 
-					if(_playerTurn == 1)
-					{
-						_nbOfBlack = _nbOfBlack + 1;
-						_nbOfWhite = _nbOfWhite - 1;
-					}
-					else
-					{
-						_nbOfWhite = _nbOfWhite + 1;
-						_nbOfBlack = _nbOfBlack - 1;
-					}
+					if(_playerTurn == 1){_nbOfBlack = _nbOfBlack + 1;_nbOfWhite = _nbOfWhite - 1;}
+					else{_nbOfWhite = _nbOfWhite + 1; _nbOfBlack = _nbOfBlack - 1;}
 
 					moving_position -= direction;
 				}
-
 				return true;
 			}
-
 			else
 				return false;
 		}
 		else
 			return false;
-
 	}
 }
 
@@ -166,16 +154,15 @@ void GameSystem::play_position(int position)
 	}
 }
 
-/*bool GameSystem::no_possible_play()
-{
-	for(int position=0; position<64; position++)
-	{
-		if(_othellierSystem[position] == -1)
-		{
-			if(eligible_square(position) == true)
-				return false;
-		}
-	}
+int GameSystem::min_max() {
 
-	return true;
-}*/
+	int i=0;
+	while(i<64)
+	{
+		if(eligible_square(i))
+			return i;
+		i++;
+	}
+	return -1;
+
+}

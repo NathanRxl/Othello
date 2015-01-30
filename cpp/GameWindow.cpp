@@ -6,7 +6,7 @@
 
 GameWindow::GameWindow():QWidget()
 {
-	setFixedSize(430, 500);
+	setFixedSize(430, 520);
 	setWindowTitle("Othello - Jeu en cours");
 
 	QVBoxLayout *gameWindowLayout = new QVBoxLayout();
@@ -36,14 +36,22 @@ GameWindow::GameWindow():QWidget()
 
 	QGroupBox *buttonsGroupBox = new QGroupBox();
 	QVBoxLayout *buttonsLayout = new QVBoxLayout();
+
+	_computerTurnButton = new QPushButton("IA", this);
+	QObject::connect(_computerTurnButton, SIGNAL(clicked()), this, SLOT(computerTurn()));
+	_computerTurnButton->setEnabled(true);
+	buttonsLayout->addWidget(_computerTurnButton);
+
 	_passButton = new QPushButton("Passer", this);
 	QObject::connect(_passButton, SIGNAL(clicked()), this, SLOT(pass()));
 	_passButton->setEnabled(true);
 	buttonsLayout->addWidget(_passButton);
+
 	_newGameButton = new QPushButton("Nouvelle Partie", this);
 	QObject::connect(_newGameButton, SIGNAL(clicked()), this, SLOT(newGame(void)));
 	_newGameButton->setEnabled(false);
 	buttonsLayout->addWidget(_newGameButton);
+
 	buttonsGroupBox->setLayout(buttonsLayout);
 
 	gameWindowLayout->addWidget(othellierGroupBox);
@@ -66,8 +74,9 @@ void GameWindow::display_squares(int* othellier_system)
 		}
 	}
 
-	if (_gameSystem._nbOfBlack == 0 || _gameSystem._nbOfWhite == 0)
-	{
+	if (_gameSystem._nbOfBlack == 0 || _gameSystem._nbOfWhite == 0) //If there is no black or white pawns anymore 
+	{ 
+		_computerTurnButton->setEnabled(false);
 		_passButton->setEnabled(false);
 		_newGameButton->setEnabled(true);
 		if (_gameSystem._nbOfBlack == 0)
@@ -81,6 +90,7 @@ void GameWindow::display_squares(int* othellier_system)
 		if(_gameSystem._nbOfBlack+_gameSystem._nbOfWhite == 64)
 		{
 			//Il ne reste aucune case jouable
+			_computerTurnButton->setEnabled(false);
 			_passButton->setEnabled(false);
 			_newGameButton->setEnabled(true);
 			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
@@ -107,6 +117,7 @@ void GameWindow::newGame()
 {
     _gameSystem.init_game();
 	display_squares(_gameSystem._othellierSystem);
+	_computerTurnButton->setEnabled(true);
 	_passButton->setEnabled(true);
 	_newGameButton->setEnabled(false);
 }
@@ -115,4 +126,18 @@ void GameWindow::pass()
 {
 	_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
 	std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
+}
+
+void GameWindow::computerTurn(){
+	int chosenPosition = _gameSystem.min_max();
+	if(chosenPosition == -1)
+	{
+		_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
+		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
+	}
+	else
+	{
+		_gameSystem.play_position(chosenPosition);
+		display_squares(_gameSystem._othellierSystem);
+	}
 }

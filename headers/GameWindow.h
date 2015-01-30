@@ -10,6 +10,7 @@ class GameWindow : public QWidget
 	private:
 	QPushButton* _passButton;
 	QPushButton* _newGameButton;
+	QPushButton* _computerTurnButton;
 
     public:
 	QList<ClickableLabel*> _othellierSquares;
@@ -23,6 +24,7 @@ class GameWindow : public QWidget
     void playPawn(int position);
 	void newGame();
 	void pass();
+	void computerTurn();
 
 };
  
