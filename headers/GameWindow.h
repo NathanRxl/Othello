@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include "ClickableLabel.h"
 #include "GameSystem.h"
+#include "Othellier.h"
 
 class GameWindow : public QWidget
 {
@@ -17,7 +18,7 @@ class GameWindow : public QWidget
 	GameSystem _gameSystem;
 
     GameWindow();
-	void display_squares(int* othellier);
+	void display_squares(Othellier othellier);
 
     Q_OBJECT
     public slots:

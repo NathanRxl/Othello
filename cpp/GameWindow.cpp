@@ -2,6 +2,7 @@
 #include <QGroupBox>
 #include "GameWindow.h"
 #include "GameSystem.h"
+#include "ia.h"
 #include <iostream>
 
 GameWindow::GameWindow():QWidget()
@@ -59,7 +60,7 @@ GameWindow::GameWindow():QWidget()
 	setLayout(gameWindowLayout);
 }
 
-void GameWindow::display_squares(int* othellier_system)
+void GameWindow::display_squares(Othellier othellier_system)
 {
 	for(int i=0; i<8; i++)
 	{
@@ -85,11 +86,33 @@ void GameWindow::display_squares(int* othellier_system)
 			std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
 	}
 
+	else if(_gameSystem._nbOfBlack+_gameSystem._nbOfWhite == 64)
+	{
+			//Il ne reste aucune case jouable
+			_computerTurnButton->setEnabled(false);
+			_passButton->setEnabled(false);
+			_newGameButton->setEnabled(true);
+			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
+			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
+			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
+	}
+
 	else
 	{
-		if(_gameSystem._nbOfBlack+_gameSystem._nbOfWhite == 64)
+		bool end_game = true;
+		for(int i=0; i<64; ++i)
 		{
-			//Il ne reste aucune case jouable
+			if(_gameSystem._othellierSystem[i] == -1)
+			{
+				if(_gameSystem._othellierSystem.is_eligible(i, 1) == true || _gameSystem._othellierSystem.is_eligible(i, 0) == true)
+					end_game = false;
+			}
+		}
+		if(end_game == true)
+		{
 			_computerTurnButton->setEnabled(false);
 			_passButton->setEnabled(false);
 			_newGameButton->setEnabled(true);
@@ -106,7 +129,7 @@ void GameWindow::display_squares(int* othellier_system)
 
 void GameWindow::playPawn(int position)
 {
-	if(_gameSystem.eligible_square(position))
+	if(_gameSystem._othellierSystem.is_eligible(position, _gameSystem._playerTurn))
 	{
 		_gameSystem.play_position(position);
 		display_squares(_gameSystem._othellierSystem);
@@ -129,7 +152,7 @@ void GameWindow::pass()
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = _gameSystem.min_max();
+	int chosenPosition = min_max_0(_gameSystem._othellierSystem, _gameSystem._playerTurn);
 	if(chosenPosition == -1)
 	{
 		_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;

@@ -1,43 +1,24 @@
 #include "GameSystem.h"
+#include "Othellier.h"
+#include "utils.h"
 #include <iostream>
-
-#include <windows.h>
 
 GameSystem::GameSystem()
 {
-	_othellierSystem = new int[64];
+	Othellier _othellierSystem;
 	init_game();
 }
 
 void GameSystem::init_game(){
 
-	for(int i=0; i<8; i++)
-		for(int j=0; j<8; j++)
-			_othellierSystem[8*i+j]=-1;
-
-	_othellierSystem[8*3+3]=1;
-	_othellierSystem[8*3+4]=0;
-	_othellierSystem[8*4+3]=0;
-	_othellierSystem[8*4+4]=1;
-
+	_othellierSystem = Othellier();
 	_nbOfBlack = 2;
 	_nbOfWhite = 2;
-
 	_playerTurn=1; //Black
 
 }
 
-bool possible_position(int position, int direction) //Tests whether [position] is in the board
-{
-	bool b=true;
-	if (abs((position%8) - ((position+direction)%8)) > 1) //Exiting the frame through upper or lower edge.
-		b=false;
-	if (abs((position/8) - ((position+direction)/8)) > 1)//Exiting the frame through right or left edge.
-		b=false;
-	return b;
-}
-
-bool GameSystem::exploration(int position, int direction)
+bool GameSystem::flip_exploration(int position, int direction, int player) //Appelée à disparaitre
 {
 	//Tests whether [position] and [position+direction] are of different colours
 	//and explore in that direction.
@@ -53,23 +34,23 @@ bool GameSystem::exploration(int position, int direction)
 
 	int moving_position = position+direction;
 
-	if (possible_position(position, direction) == false || (_othellierSystem[moving_position] != 1-_playerTurn))
+	if (possible_position(position, direction) == false || (_othellierSystem[moving_position] != 1-player))
 		return false;
 	else
 	{
-		while((_othellierSystem[moving_position+direction] == 1-_playerTurn) && possible_position(moving_position, direction))
+		while((_othellierSystem[moving_position+direction] == 1-player) && possible_position(moving_position, direction))
 		{
 			moving_position += direction;
 		}
 		if (possible_position(moving_position,direction))
 		{
-			if (_othellierSystem[moving_position+direction] == _playerTurn)
+			if (_othellierSystem[moving_position+direction] == player)
 			{
-				while(_othellierSystem[moving_position] == 1-_playerTurn)
+				while(_othellierSystem[moving_position] == 1-player)
 				{
-					_othellierSystem[moving_position] = _playerTurn;
+					_othellierSystem[moving_position] = player;
 
-					if(_playerTurn == 1){_nbOfBlack = _nbOfBlack + 1;_nbOfWhite = _nbOfWhite - 1;}
+					if(player == 1){_nbOfBlack = _nbOfBlack + 1;_nbOfWhite = _nbOfWhite - 1;}
 					else{_nbOfWhite = _nbOfWhite + 1; _nbOfBlack = _nbOfBlack - 1;}
 
 					moving_position -= direction;
@@ -84,7 +65,7 @@ bool GameSystem::exploration(int position, int direction)
 	}
 }
 
-bool GameSystem::eligible_square(int position)
+bool GameSystem::flip_is_eligible(int position, int player) //Appelée à disparaitre
 {
 																					//if(with_flip == true)
 																						std::cout << "Position " << position;
@@ -107,14 +88,14 @@ bool GameSystem::eligible_square(int position)
 		int up_right = 8*1+(-1);     //  7
 
 		bool b[8];
-		b[0] = exploration(position, up);
-		b[1] = exploration(position, up_left);
-		b[2] = exploration(position, left);
-		b[3] = exploration(position, down_left);
-		b[4] = exploration(position, down);
-		b[5] = exploration(position, down_right);
-		b[6] = exploration(position, right);
-		b[7] = exploration(position, up_right);
+		b[0] = flip_exploration(position, up, player);
+		b[1] = flip_exploration(position, up_left, player);
+		b[2] = flip_exploration(position, left, player);
+		b[3] = flip_exploration(position, down_left, player);
+		b[4] = flip_exploration(position, down, player);
+		b[5] = flip_exploration(position, down_right, player);
+		b[6] = flip_exploration(position, right, player);
+		b[7] = flip_exploration(position, up_right, player);
 
 		bool return_value = false;
 		for(int i=0; i<8; i++)
@@ -134,6 +115,8 @@ bool GameSystem::eligible_square(int position)
 
 void GameSystem::play_position(int position)
 {
+	_othellierSystem.flip(position, _playerTurn);
+
 	if(_playerTurn==1)
 	{
 		_othellierSystem[position] = 1;
@@ -152,17 +135,4 @@ void GameSystem::play_position(int position)
 		std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
 		std::cout << "Nombre de Blancs: " << _nbOfWhite << std::endl << std::endl;
 	}
-}
-
-int GameSystem::min_max() {
-
-	int i=0;
-	while(i<64)
-	{
-		if(eligible_square(i))
-			return i;
-		i++;
-	}
-	return -1;
-
 }

@@ -1,6 +1,10 @@
 #include "HomeWindow.h"
 #include "GameWindow.h"
 #include "GameSystem.h"
+
+
+//DEBUG
+#include <iostream>
  
 HomeWindow::HomeWindow() : QWidget()
 {
@@ -22,6 +26,8 @@ HomeWindow::HomeWindow() : QWidget()
 
 void HomeWindow::openGameWindow(void)
 {
+	Othellier othellier_test;
+	std::cout << "position 8*3" << othellier_test[8*3] << std::endl;
     GameWindow *gameWindow =new GameWindow;
 	this->hide();
 	gameWindow->show();
