@@ -15,6 +15,7 @@ int min_max_0(Othellier othellier, int player) {
 }
 
 int min_max_1(Othellier othellier, int player) {
+	//WORK IN PROGRESS
 
 	int pass_value = othellier.nb_eligible(player)-othellier.nb_eligible(1-player);
 
@@ -23,6 +24,5 @@ int min_max_1(Othellier othellier, int player) {
 	//int* othellier = new int[64];
 
 	return 1;
-
 
 }

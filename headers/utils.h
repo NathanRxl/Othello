@@ -1,3 +1,4 @@
 #pragma once
 
-bool possible_position(int position, int direction);
+//Tests whether [position] is on the board
+bool is_onboard(int position, int direction);

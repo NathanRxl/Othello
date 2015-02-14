@@ -1,12 +1,14 @@
 #include "utils.h"
 #include <cmath>
 
-bool possible_position(int position, int direction) //Tests whether [position] is in the board
+bool is_onboard(int position, int direction)
 {
-	bool b=true;
+	//Tests whether [position] is on the board
+
+	bool return_value=true;
 	if (abs((position%8) - ((position+direction)%8)) > 1) //Exiting the frame through upper or lower edge.
-		b=false;
+		return_value=false;
 	if (abs((position/8) - ((position+direction)/8)) > 1)//Exiting the frame through right or left edge.
-		b=false;
-	return b;
+		return_value=false;
+	return return_value;
 }

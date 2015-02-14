@@ -18,7 +18,10 @@ class GameWindow : public QWidget
 	GameSystem _gameSystem;
 
     GameWindow();
-	void display_squares(Othellier othellier);
+	//Display the configuration of the _gameSystem._othellierSystem
+	void display_squares();
+	//Tests whether the game is finished or not and does the necessary if yes. Does nothing if not.
+	void game_end_test();
 
     Q_OBJECT
     public slots:

@@ -6,15 +6,21 @@
 class GameSystem
 {
 	public:
-	Othellier _othellierSystem; //[i]==1 if black, [i]==0 if white, [i]==-1 if unoccupied
+	//[i]==1 if black, [i]==0 if white, [i]==-1 if unoccupied
+	Othellier _othellierSystem;
 	int _nbOfWhite;
 	int _nbOfBlack;
+	// _playerTurn == 1 means black, _playerTurn == 0 means white. 1-_playerTurn means the other player.
 	int _playerTurn;
 
-	GameSystem();
+	//Initiates the othellier and launches the game: black begins.
+	//This function is only a tool for the GameSystem constructor
 	void init_game();
-	bool flip_exploration(int position, int direction, int player); //Appelée à disparaitre
-	bool flip_is_eligible(int position, int player); //Appelée à disparaître
+	GameSystem();
+	//Flips the neccesary pawns of an othellier as if [position] is played.
+	//This function doesn't play in "position" and is only a tool for [play_position]
+	void flip(int position);
+	//Plays a given [position] on the system board and does the necessary flips
 	void play_position(int position);
 
 };

@@ -5,7 +5,7 @@
 #include "ia.h"
 #include <iostream>
 
-GameWindow::GameWindow():QWidget()
+GameWindow::GameWindow() : QWidget()
 {
 	setFixedSize(430, 520);
 	setWindowTitle("Othello - Jeu en cours");
@@ -60,23 +60,30 @@ GameWindow::GameWindow():QWidget()
 	setLayout(gameWindowLayout);
 }
 
-void GameWindow::display_squares(Othellier othellier_system)
+void GameWindow::display_squares()
 {
 	for(int i=0; i<8; i++)
 	{
 		for(int j=0; j<8; j++)
 		{
-			if (othellier_system[8*i+j] == -1)
+			if (_gameSystem._othellierSystem[8*i+j] == -1)
 				_othellierSquares[8*i+j]->setPixmap(QPixmap("pictures/empty_square.png"));
-			if (othellier_system[8*i+j] == 0)
+			if (_gameSystem._othellierSystem[8*i+j] == 0)
 				_othellierSquares[8*i+j]->setPixmap(QPixmap("pictures/white_pawn.png"));
-			if (othellier_system[8*i+j] == 1)
+			if (_gameSystem._othellierSystem[8*i+j] == 1)
 				_othellierSquares[8*i+j]->setPixmap(QPixmap("pictures/black_pawn.png"));
 		}
 	}
 
-	if (_gameSystem._nbOfBlack == 0 || _gameSystem._nbOfWhite == 0) //If there is no black or white pawns anymore 
+}
+
+void GameWindow::game_end_test()
+{
+	//Tests whether the game is finished or not and does the necessary if yes. Does nothing if not.
+
+	if (_gameSystem._nbOfBlack == 0 || _gameSystem._nbOfWhite == 0) 
 	{ 
+		//If there is no black or white pawns anymore 
 		_computerTurnButton->setEnabled(false);
 		_passButton->setEnabled(false);
 		_newGameButton->setEnabled(true);
@@ -88,7 +95,7 @@ void GameWindow::display_squares(Othellier othellier_system)
 
 	else if(_gameSystem._nbOfBlack+_gameSystem._nbOfWhite == 64)
 	{
-			//Il ne reste aucune case jouable
+			//All squares are occupied
 			_computerTurnButton->setEnabled(false);
 			_passButton->setEnabled(false);
 			_newGameButton->setEnabled(true);
@@ -100,8 +107,9 @@ void GameWindow::display_squares(Othellier othellier_system)
 				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
 	}
 
-	else
+	else if(_gameSystem._nbOfBlack+_gameSystem._nbOfWhite >= 40)
 	{
+		//Should be replaced in the future by a simple test on the history of _othellierSystem: if both players passed, the game ends.
 		bool end_game = true;
 		for(int i=0; i<64; ++i)
 		{
@@ -124,7 +132,6 @@ void GameWindow::display_squares(Othellier othellier_system)
 				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
 		}
 	}
-
 }
 
 void GameWindow::playPawn(int position)
@@ -132,14 +139,15 @@ void GameWindow::playPawn(int position)
 	if(_gameSystem._othellierSystem.is_eligible(position, _gameSystem._playerTurn))
 	{
 		_gameSystem.play_position(position);
-		display_squares(_gameSystem._othellierSystem);
+		display_squares();
+		game_end_test();
 	}
 }
 
 void GameWindow::newGame()
 {
     _gameSystem.init_game();
-	display_squares(_gameSystem._othellierSystem);
+	display_squares();
 	_computerTurnButton->setEnabled(true);
 	_passButton->setEnabled(true);
 	_newGameButton->setEnabled(false);
@@ -161,6 +169,7 @@ void GameWindow::computerTurn(){
 	else
 	{
 		_gameSystem.play_position(chosenPosition);
-		display_squares(_gameSystem._othellierSystem);
+		display_squares();
+		game_end_test();
 	}
 }

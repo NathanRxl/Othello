@@ -1,9 +1,6 @@
 #include "HomeWindow.h"
 #include "GameWindow.h"
 #include "GameSystem.h"
-
-
-//DEBUG
 #include <iostream>
  
 HomeWindow::HomeWindow() : QWidget()
@@ -31,5 +28,5 @@ void HomeWindow::openGameWindow(void)
     GameWindow *gameWindow =new GameWindow;
 	this->hide();
 	gameWindow->show();
-	gameWindow->display_squares(gameWindow->_gameSystem._othellierSystem);
+	gameWindow->display_squares();
 }
