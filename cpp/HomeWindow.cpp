@@ -23,9 +23,7 @@ HomeWindow::HomeWindow() : QWidget()
 
 void HomeWindow::openGameWindow(void)
 {
-	Othellier othellier_test;
-	std::cout << "position 8*3" << othellier_test[8*3] << std::endl;
-    GameWindow *gameWindow =new GameWindow;
+    GameWindow *gameWindow = new GameWindow;
 	this->hide();
 	gameWindow->show();
 	gameWindow->display_squares();

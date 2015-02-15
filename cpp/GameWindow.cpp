@@ -77,70 +77,24 @@ void GameWindow::display_squares()
 
 }
 
-void GameWindow::game_end_test()
-{
-	//Tests whether the game is finished or not and does the necessary if yes. Does nothing if not.
-
-	if (_gameSystem._nbOfBlack == 0 || _gameSystem._nbOfWhite == 0) 
-	{ 
-		//If there is no black or white pawns anymore 
-		_computerTurnButton->setEnabled(false);
-		_passButton->setEnabled(false);
-		_newGameButton->setEnabled(true);
-		if (_gameSystem._nbOfBlack == 0)
-			std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
-		else
-			std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
-	}
-
-	else if(_gameSystem._nbOfBlack+_gameSystem._nbOfWhite == 64)
-	{
-			//All squares are occupied
-			_computerTurnButton->setEnabled(false);
-			_passButton->setEnabled(false);
-			_newGameButton->setEnabled(true);
-			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
-				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
-			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
-				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
-			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
-				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
-	}
-
-	else if(_gameSystem._nbOfBlack+_gameSystem._nbOfWhite >= 40)
-	{
-		//Should be replaced in the future by a simple test on the history of _othellierSystem: if both players passed, the game ends.
-		bool end_game = true;
-		for(int i=0; i<64; ++i)
-		{
-			if(_gameSystem._othellierSystem[i] == -1)
-			{
-				if(_gameSystem._othellierSystem.is_eligible(i, 1) == true || _gameSystem._othellierSystem.is_eligible(i, 0) == true)
-					end_game = false;
-			}
-		}
-		if(end_game == true)
-		{
-			_computerTurnButton->setEnabled(false);
-			_passButton->setEnabled(false);
-			_newGameButton->setEnabled(true);
-			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
-				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
-			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
-				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
-			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
-				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
-		}
-	}
-}
-
 void GameWindow::playPawn(int position)
 {
 	if(_gameSystem._othellierSystem.is_eligible(position, _gameSystem._playerTurn))
 	{
 		_gameSystem.play_position(position);
 		display_squares();
-		game_end_test();
+		if(_gameSystem.is_game_finished() == true)
+		{
+			_computerTurnButton->setEnabled(false);
+			_passButton->setEnabled(false);
+			_newGameButton->setEnabled(true);
+			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
+			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
+			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
+		}
 	}
 }
 
@@ -156,6 +110,7 @@ void GameWindow::newGame()
 void GameWindow::pass()
 {
 	_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
+	_gameSystem._othellierSystem.archive(-1);
 	std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
 }
 
@@ -170,6 +125,17 @@ void GameWindow::computerTurn(){
 	{
 		_gameSystem.play_position(chosenPosition);
 		display_squares();
-		game_end_test();
+		if(_gameSystem.is_game_finished() == true)
+		{
+			_computerTurnButton->setEnabled(false);
+			_passButton->setEnabled(false);
+			_newGameButton->setEnabled(true);
+			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
+			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
+			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
+				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
+		}
 	}
 }

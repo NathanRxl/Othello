@@ -1,7 +1,7 @@
 #pragma once
 #include <stack>
 
-class Othellier
+class Othellier //Pourrait être la partie "statique" sans play et sans flip, et GameSystem serait la partie dynamique
 {
 public:
 	int* _othellier;

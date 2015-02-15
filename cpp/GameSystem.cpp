@@ -5,19 +5,27 @@
 
 GameSystem::GameSystem()
 {
-	Othellier _othellierSystem;
 	init_game();
 }
 
 void GameSystem::init_game(){
 	//Initiates the othellier and launches the game: black begins
 	//This function is only a tool for the GameSystem constructor
-
 	_othellierSystem = Othellier();
 	_nbOfBlack = 2;
 	_nbOfWhite = 2;
 	_playerTurn=1; //Black
 
+}
+
+bool GameSystem::is_eligible(int position) //Intérêt à discuter ensemble.
+{
+	return _othellierSystem.is_eligible(position, _playerTurn);
+}
+
+int GameSystem::nb_eligible() //Intérêt à discuter ensemble.
+{
+	return _othellierSystem.nb_eligible(_playerTurn);
 }
 
 void GameSystem::flip(int position)
@@ -95,4 +103,39 @@ void GameSystem::play_position(int position)
 	std::cout << "Tour du joueur: " << _playerTurn << std::endl;
 	std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
 	std::cout << "Nombre de Blancs: " << _nbOfWhite << std::endl << std::endl;
+}
+
+bool GameSystem::is_game_finished()
+{
+	//Tests whether the game is finished or not and does the necessary if yes. Does nothing if not.
+
+	if (_nbOfBlack == 0 || _nbOfWhite == 0) 
+	{ 
+		//If there is no black or white pawns anymore 
+		return true;
+	}
+
+	else if(_nbOfBlack+_nbOfWhite == 64)
+	{
+			//All squares are occupied
+			return true;
+	}
+
+	else if(_nbOfBlack+_nbOfWhite >= 40)
+	{
+		//Should be replaced in the future by a simple test on the history of _othellierSystem: if both players passed, the game ends.
+		bool end_game = true;
+		for(int i=0; i<64; ++i)
+		{
+			if(_othellierSystem[i] == -1)
+			{
+				if(_othellierSystem.is_eligible(i, 1) == true || _othellierSystem.is_eligible(i, 0) == true)
+					end_game = false;
+			}
+		}
+		return end_game;
+	}
+
+	else
+		return false;
 }
