@@ -1,31 +1,119 @@
 #include "GameSystem.h"
-#include "Othellier.h"
 #include "utils.h"
 #include <iostream>
 
 GameSystem::GameSystem()
 {
+	_othellierSystem = new int[64];
 	init_game();
 }
 
 void GameSystem::init_game(){
 	//Initiates the othellier and launches the game: black begins
-	//This function is only a tool for the GameSystem constructor
-	_othellierSystem = Othellier();
+	for(int i=0; i<8; i++)
+		for(int j=0; j<8; j++)
+			_othellierSystem[8*i+j]=-1;
+
+	_othellierSystem[8*3+3]=1;
+	_othellierSystem[8*3+4]=0;
+	_othellierSystem[8*4+3]=0;
+	_othellierSystem[8*4+4]=1;
+
 	_nbOfBlack = 2;
 	_nbOfWhite = 2;
 	_playerTurn=1; //Black
-
 }
 
-bool GameSystem::is_eligible(int position) //Intérêt à discuter ensemble.
+bool GameSystem::is_eligible(int position, int player)
 {
-	return _othellierSystem.is_eligible(position, _playerTurn);
+	//Returns true if the position is eligible for a given player, false if not
+																					//if(with_flip == true)
+																						std::cout << "Position " << position;
+
+	if(_othellierSystem[position] != -1)
+	{
+																					//if(with_flip == true)
+																						std::cout << " occupied" << std::endl;
+		return false;
+	}
+	else
+	{
+		//Tests whether [position] and [position+direction] are of different colours
+		//and explore in that direction: if the algorithm find again the initial color, it returns true, else, false.
+		//directions: up =         8*  0 +(-1) = -1
+		//	          up_left =    8*(-1)+(-1) = -9
+		//	          left =       8*(-1)+  0  = -8
+		//	          down_left =  8*(-1)+  1  = -7
+		//	          down =       8*  0 +  1  =  1
+		//	          down_right = 8*  1 +  1  =  9
+		//	          right =      8*  1 +  0  =  8
+		//	          up_right =   8*  1 +(-1) =  7
+		//This function returns true if [position] is eligible
+		int direction[8];
+		direction[0] = -1;
+		direction[1] = -9;
+		direction[2] = -8;
+		direction[3] = -7;
+		direction[4] = 1;
+		direction[5] = 9;
+		direction[6] = 8;
+		direction[7] = 7;
+
+		bool check_direction[8];
+
+		for(int i=0; i<8; i++) //loop over directions
+		{
+			int moving_position = position+direction[i];
+
+			if (is_onboard(position, direction[i]) == false || (_othellierSystem[moving_position] != 1-player))
+				check_direction[i] = false;
+			else
+			{
+				while((_othellierSystem[moving_position+direction[i]] == 1-player) && is_onboard(moving_position, direction[i]))
+				{
+					moving_position += direction[i];
+				}
+				if (is_onboard(moving_position,direction[i]))
+				{
+					if (_othellierSystem[moving_position+direction[i]] == player)
+					{
+						check_direction[i] = true;
+					}
+					else
+						check_direction[i] = false;
+				}
+				else
+					check_direction[i] = false;
+			}
+		}
+
+		bool return_value = false;
+			for(int i=0; i<8; i++)
+			{
+				if(check_direction[i] == true)
+					return_value = true;
+			}
+																			//if(with_flip == true){
+																				if (return_value)
+																					std::cout << " eligible? true" << std::endl;
+																				else
+																					std::cout << " eligible? false" << std::endl;//}
+		return return_value;
+	}
 }
 
-int GameSystem::nb_eligible() //Intérêt à discuter ensemble.
+int GameSystem::nb_eligible(int player)
 {
-	return _othellierSystem.nb_eligible(_playerTurn);
+	//Returns the number of eligible plays for a given player
+
+	int i=0;
+	while(i<64)
+	{
+		if(is_eligible(i, player))
+			i++;
+	}
+
+	return i;
 }
 
 void GameSystem::flip(int position)
@@ -98,7 +186,6 @@ void GameSystem::play_position(int position)
 	_nbOfWhite = _nbOfWhite + (1-_playerTurn);
 	this->flip(position);
 	_playerTurn = 1-_playerTurn;
-	_othellierSystem.archive(position);
 
 	std::cout << "Tour du joueur: " << _playerTurn << std::endl;
 	std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
@@ -129,7 +216,7 @@ bool GameSystem::is_game_finished()
 		{
 			if(_othellierSystem[i] == -1)
 			{
-				if(_othellierSystem.is_eligible(i, 1) == true || _othellierSystem.is_eligible(i, 0) == true)
+				if(is_eligible(i, 1) == true || is_eligible(i, 0) == true)
 					end_game = false;
 			}
 		}

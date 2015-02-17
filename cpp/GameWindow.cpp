@@ -79,7 +79,7 @@ void GameWindow::display_squares()
 
 void GameWindow::playPawn(int position)
 {
-	if(_gameSystem._othellierSystem.is_eligible(position, _gameSystem._playerTurn))
+	if(_gameSystem.is_eligible(position, _gameSystem._playerTurn))
 	{
 		_gameSystem.play_position(position);
 		display_squares();
@@ -110,12 +110,11 @@ void GameWindow::newGame()
 void GameWindow::pass()
 {
 	_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
-	_gameSystem._othellierSystem.archive(-1);
 	std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = min_max_0(_gameSystem._othellierSystem, _gameSystem._playerTurn);
+	int chosenPosition = min_max_0(_gameSystem, _gameSystem._playerTurn);
 	if(chosenPosition == -1)
 	{
 		_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;

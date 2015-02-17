@@ -4,7 +4,6 @@
 #include <QPushButton>
 #include "ClickableLabel.h"
 #include "GameSystem.h"
-#include "Othellier.h"
 
 class GameWindow : public QWidget
 {

@@ -10,14 +10,12 @@ SET(Othello_SOURCES cpp/main.cpp
 					cpp/GameWindow.cpp
 					cpp/ClickableLabel.cpp
                     cpp/GameSystem.cpp
-                    cpp/Othellier.cpp
 					cpp/utils.cpp
                     cpp/ia.cpp)
 SET(Othello_HEADERS headers/HomeWindow.h
 					headers/GameWindow.h
 					headers/ClickableLabel.h
                     headers/GameSystem.h
-                    headers/Othellier.h
 					headers/utils.h
                     headers/ia.h)
 
