@@ -8,6 +8,17 @@ GameSystem::GameSystem()
 	init_game();
 }
 
+void GameSystem::operator=(GameSystem gameSystem)
+{
+	for(int i=0; i<64; ++i)
+		_othellierSystem[i] = gameSystem._othellierSystem[i];
+	_playerTurn = gameSystem._playerTurn;
+	_nbOfBlack = gameSystem._nbOfBlack;
+	_nbOfWhite = gameSystem._nbOfWhite;
+	_nbEligiblePlayer = gameSystem._nbEligiblePlayer;
+	_nbEligibleOpponent = gameSystem._nbEligibleOpponent;
+}
+
 void GameSystem::init_game(){
 	//Initiates the othellier and launches the game: black begins
 	for(int i=0; i<8; i++)
@@ -21,19 +32,19 @@ void GameSystem::init_game(){
 
 	_nbOfBlack = 2;
 	_nbOfWhite = 2;
-	_playerTurn=1; //Black
+	_playerTurn = 1; //Black
+	_nbEligiblePlayer = 4;
+	_nbEligibleOpponent = 4;
 }
 
 bool GameSystem::is_eligible(int position, int player)
 {
 	//Returns true if the position is eligible for a given player, false if not
-																					//if(with_flip == true)
-																						std::cout << "Position " << position;
+																						//std::cout << "Position " << position;
 
 	if(_othellierSystem[position] != -1)
 	{
-																					//if(with_flip == true)
-																						std::cout << " occupied" << std::endl;
+																						//std::cout << " occupied" << std::endl;
 		return false;
 	}
 	else
@@ -93,11 +104,11 @@ bool GameSystem::is_eligible(int position, int player)
 				if(check_direction[i] == true)
 					return_value = true;
 			}
-																			//if(with_flip == true){
-																				if (return_value)
-																					std::cout << " eligible? true" << std::endl;
-																				else
-																					std::cout << " eligible? false" << std::endl;//}
+
+																				//if (return_value)
+																					//std::cout << " eligible? true" << std::endl;
+																				//else
+																					//std::cout << " eligible? false" << std::endl;//}
 		return return_value;
 	}
 }
@@ -106,14 +117,14 @@ int GameSystem::nb_eligible(int player)
 {
 	//Returns the number of eligible plays for a given player
 
-	int i=0;
-	while(i<64)
+	int return_value=0;
+	for(int i=0; i<64; ++i)
 	{
 		if(is_eligible(i, player))
-			i++;
+			return_value=return_value+1;
 	}
 
-	return i;
+	return return_value;
 }
 
 void GameSystem::flip(int position)
@@ -186,6 +197,8 @@ void GameSystem::play_position(int position)
 	_nbOfWhite = _nbOfWhite + (1-_playerTurn);
 	this->flip(position);
 	_playerTurn = 1-_playerTurn;
+	_nbEligiblePlayer = nb_eligible(_playerTurn);
+	_nbEligibleOpponent = nb_eligible(1-_playerTurn);
 
 	std::cout << "Tour du joueur: " << _playerTurn << std::endl;
 	std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
@@ -197,32 +210,51 @@ bool GameSystem::is_game_finished()
 	//Tests whether the game is finished or not and does the necessary if yes. Does nothing if not.
 
 	if (_nbOfBlack == 0 || _nbOfWhite == 0) 
-	{ 
 		//If there is no black or white pawns anymore 
 		return true;
-	}
 
 	else if(_nbOfBlack+_nbOfWhite == 64)
-	{
-			//All squares are occupied
-			return true;
-	}
+		//All squares are occupied
+		return true;
 
-	else if(_nbOfBlack+_nbOfWhite >= 40)
-	{
-		//Should be replaced in the future by a simple test on the history of _othellierSystem: if both players passed, the game ends.
-		bool end_game = true;
-		for(int i=0; i<64; ++i)
-		{
-			if(_othellierSystem[i] == -1)
-			{
-				if(is_eligible(i, 1) == true || is_eligible(i, 0) == true)
-					end_game = false;
-			}
-		}
-		return end_game;
-	}
+	else if(_nbEligiblePlayer == 0 && _nbEligibleOpponent == 0)
+		return true;
 
 	else
 		return false;
+}
+
+int GameSystem::evaluate()
+{
+	int bonus = 0;
+	int opponent_pawns = _nbOfBlack*(1-_playerTurn)+_nbOfWhite*_playerTurn;
+
+	if(opponent_pawns == 0)
+		bonus = bonus + 100;
+	
+	int liberty_degree = _nbEligiblePlayer-_nbEligibleOpponent;
+
+	int grade = liberty_degree;
+
+	return grade+bonus;
+}
+
+int* GameSystem::position_eligible()
+{
+	int* possible_position = new int [_nbEligiblePlayer];
+
+	int possibility = 0;
+	for(int j=0; j<64; ++j)
+	{
+		if(possibility < _nbEligiblePlayer)
+		{
+			if(is_eligible(j, _playerTurn))
+			{
+				possible_position[possibility] = j;
+				possibility = possibility + 1;
+			}
+		}
+	}
+
+	return possible_position;
 }

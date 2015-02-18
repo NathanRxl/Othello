@@ -16,38 +16,34 @@ int min_max_0(GameSystem gameSystem, int player) {
 }
 
 int min_max_1(GameSystem gameSystem, int player) {
-	// WORK IN PROGRESS
-	
-	int nb_play_player = gameSystem.nb_eligible(player);
-	int nb_play_opponent = gameSystem.nb_eligible(1-player);
 
-	int pass_value = nb_play_player-nb_play_opponent;
-	std::cout << "Evaluation de passer" << pass_value << std::endl;
+	if(gameSystem._nbEligiblePlayer == 0)
+		return -1;
+	int pass_value = gameSystem._nbEligiblePlayer - gameSystem._nbEligibleOpponent;
+	int* possible_position = gameSystem.position_eligible();
 
-	int* possible_play = new int [nb_play_player];
-	int* play_value = new int [nb_play_player];
-	int* possible_position = new int [nb_play_player];
+	GameSystem possibleSystem;
+	possibleSystem = gameSystem;
 
-	int possibility = 0;
-	for(int j=0; j<64; ++j)
+	int* play_value = new int [gameSystem._nbEligiblePlayer];
+	for(int i=0;  i<gameSystem._nbEligiblePlayer; ++i)
 	{
-		while(possibility != nb_play_player)
+		possibleSystem.play_position(possible_position[i]);
+		play_value[i] = possibleSystem.evaluate();
+		possibleSystem = gameSystem;
+	}
+
+	int best_value = pass_value;
+	int best_play = 0;
+	for(int k=0; k<gameSystem._nbEligiblePlayer; ++k)
+	{
+		if(best_value < play_value[k])
 		{
-			if(gameSystem.is_eligible(j, player))
-				possible_position[possibility] = j;
-			possibility = possibility + 1;
+			best_value = play_value[k];
+			best_play = k;
 		}
 	}
 
-	for(int i=0;  i<nb_play_player; ++i)
-	{
-		gameSystem.play_position(possible_position[i]);
-		play_value[i] = gameSystem.nb_eligible(player) - gameSystem.nb_eligible(1-player);
-		//othellier.unplay(possible_position[i], player);
-	}
-
-	//MAX
-	//return max
-	return 1;
+	return possible_position[best_play];
 
 }

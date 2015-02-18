@@ -110,14 +110,20 @@ void GameWindow::newGame()
 void GameWindow::pass()
 {
 	_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
+	int nbEligiblePlayer = _gameSystem._nbEligiblePlayer;
+	_gameSystem._nbEligiblePlayer = _gameSystem._nbEligibleOpponent;
+	_gameSystem._nbEligibleOpponent = nbEligiblePlayer;
 	std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = min_max_0(_gameSystem, _gameSystem._playerTurn);
+	int chosenPosition = min_max_1(_gameSystem, _gameSystem._playerTurn);
 	if(chosenPosition == -1)
 	{
 		_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
+		int nbEligiblePlayer = _gameSystem._nbEligiblePlayer;
+		_gameSystem._nbEligiblePlayer = _gameSystem._nbEligibleOpponent;
+		_gameSystem._nbEligibleOpponent = nbEligiblePlayer;
 		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
 	}
 	else
