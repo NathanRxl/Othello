@@ -17,6 +17,7 @@ void GameSystem::operator=(GameSystem gameSystem)
 	_nbOfWhite = gameSystem._nbOfWhite;
 	_nbEligiblePlayer = gameSystem._nbEligiblePlayer;
 	_nbEligibleOpponent = gameSystem._nbEligibleOpponent;
+	_eligiblePosition = gameSystem._eligiblePosition;
 }
 
 void GameSystem::init_game(){
@@ -35,6 +36,8 @@ void GameSystem::init_game(){
 	_playerTurn = 1; //Black
 	_nbEligiblePlayer = 4;
 	_nbEligibleOpponent = 4;
+
+	_eligiblePosition = eligible_position();
 }
 
 bool GameSystem::is_eligible(int position, int player)
@@ -199,6 +202,8 @@ void GameSystem::play_position(int position)
 	_playerTurn = 1-_playerTurn;
 	_nbEligiblePlayer = nb_eligible(_playerTurn);
 	_nbEligibleOpponent = nb_eligible(1-_playerTurn);
+	_eligiblePosition.clear();
+	_eligiblePosition = eligible_position();
 
 	std::cout << "Tour du joueur: " << _playerTurn << std::endl;
 	std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
@@ -231,14 +236,15 @@ int GameSystem::evaluate()
 
 	if(opponent_pawns == 0)
 		bonus = bonus + 100;
+	int corner_bonus = 10;
 	if(_othellierSystem[0] == _playerTurn)
-		bonus = bonus + 3;
+		bonus = bonus + corner_bonus;
 	if(_othellierSystem[7] == _playerTurn)
-		bonus = bonus + 3;
+		bonus = bonus + corner_bonus;
 	if(_othellierSystem[56] == _playerTurn)
-		bonus = bonus + 3;
+		bonus = bonus + corner_bonus;
 	if(_othellierSystem[63] == _playerTurn)
-		bonus = bonus + 3;
+		bonus = bonus + corner_bonus;
 	
 	int liberty_degree = _nbEligiblePlayer-_nbEligibleOpponent;
 
@@ -247,9 +253,9 @@ int GameSystem::evaluate()
 	return grade+bonus;
 }
 
-int* GameSystem::position_eligible()
+std::vector<int> GameSystem::eligible_position()
 {
-	int* possible_position = new int [_nbEligiblePlayer];
+	std::vector<int> possible_position;
 
 	int possibility = 0;
 	for(int j=0; j<64; ++j)
@@ -258,7 +264,7 @@ int* GameSystem::position_eligible()
 		{
 			if(is_eligible(j, _playerTurn))
 			{
-				possible_position[possibility] = j;
+				possible_position.push_back(j);
 				possibility = possibility + 1;
 			}
 		}

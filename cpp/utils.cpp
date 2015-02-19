@@ -12,3 +12,47 @@ bool is_onboard(int position, int direction)
 		return_value=false;
 	return return_value;
 }
+
+std::pair<int,int> max(int* position_value, std::vector<int> eligiblePosition)
+{
+	std::pair<int,int> values;
+	values.first == -1;
+	values.second == -1;
+	if (eligiblePosition.size() == 0)
+		return values;
+	else
+	{
+		for(int i=0; i<eligiblePosition.size(); i++)
+		{
+			if(position_value[i] > values.second)
+			{
+				values.second = position_value[i];
+				values.first = i;
+			}
+		}
+	}
+	return values;
+}
+
+std::pair<int,int> min(int* position_value, std::vector<int> eligiblePosition)
+{
+	std::pair<int,int> values;
+	values.first == -1;
+	values.second == -1;
+	if (eligiblePosition.size() == 0)
+		return values;
+	else
+	{
+		values.first == 0;
+		values.second == position_value[0];
+		for(int i=0; i<eligiblePosition.size(); i++)
+		{
+			if(position_value[i] > values.second)
+			{
+				values.second = position_value[i];
+				values.first = i;
+			}
+		}
+	}
+	return values;
+}

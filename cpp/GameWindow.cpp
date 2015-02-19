@@ -124,6 +124,7 @@ void GameWindow::computerTurn(){
 		int nbEligiblePlayer = _gameSystem._nbEligiblePlayer;
 		_gameSystem._nbEligiblePlayer = _gameSystem._nbEligibleOpponent;
 		_gameSystem._nbEligibleOpponent = nbEligiblePlayer;
+		_gameSystem._eligiblePosition = _gameSystem.eligible_position();
 		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
 	}
 	else

@@ -19,8 +19,9 @@ int min_max_1(GameSystem gameSystem, int player) {
 
 	if(gameSystem._nbEligiblePlayer == 0)
 		return -1;
+
 	int pass_value = gameSystem._nbEligiblePlayer - gameSystem._nbEligibleOpponent;
-	int* possible_position = gameSystem.position_eligible();
+	std::vector<int> possible_position = gameSystem._eligiblePosition;
 
 	GameSystem possibleSystem;
 	possibleSystem = gameSystem;
