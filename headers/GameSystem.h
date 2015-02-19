@@ -1,6 +1,8 @@
 #ifndef GAMESYSTEM_H
 #define GAMESYSTEM_H
 
+#include <vector>
+
 class GameSystem
 {
 	public:
@@ -12,6 +14,7 @@ class GameSystem
 	int _playerTurn;
 	int _nbEligiblePlayer; //Number of eligible plays for player [_playerTurn]
 	int _nbEligibleOpponent; //Number of eligible plays for player [1-_playerTurn]
+	std::vector<int> _eligiblePosition; //Table of possible positions for the player.
 
 	//Initiates the othellier and launches the game: black begins.
 	//This function is only a tool for the GameSystem constructor
@@ -27,7 +30,7 @@ class GameSystem
 	void play_position(int position);
 	bool is_game_finished();
 	int evaluate();
-	int* position_eligible(); //Returns table of possible position for the player
+	std::vector<int> eligible_position(); //Returns table of possible position for the player
 };
 
 #endif
