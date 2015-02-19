@@ -25,10 +25,10 @@ void GameSystem::init_game(){
 		for(int j=0; j<8; j++)
 			_othellierSystem[8*i+j]=-1;
 
-	_othellierSystem[8*3+3]=1;
-	_othellierSystem[8*3+4]=0;
-	_othellierSystem[8*4+3]=0;
-	_othellierSystem[8*4+4]=1;
+	_othellierSystem[8*3+3]=0;
+	_othellierSystem[8*3+4]=1;
+	_othellierSystem[8*4+3]=1;
+	_othellierSystem[8*4+4]=0;
 
 	_nbOfBlack = 2;
 	_nbOfWhite = 2;
