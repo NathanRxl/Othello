@@ -17,7 +17,9 @@ void GameSystem::operator=(GameSystem gameSystem)
 	_nbOfWhite = gameSystem._nbOfWhite;
 	_nbEligiblePlayer = gameSystem._nbEligiblePlayer;
 	_nbEligibleOpponent = gameSystem._nbEligibleOpponent;
-	_eligiblePosition = gameSystem._eligiblePosition;
+
+	std::vector<int>::iterator it=gameSystem._eligiblePosition.begin();
+	_eligiblePosition.assign(it, gameSystem._eligiblePosition.end());
 }
 
 void GameSystem::init_game(){
@@ -160,7 +162,7 @@ void GameSystem::flip(int position)
 	{
 		int moving_position = position+direction[i];
 
-		if (is_onboard(position, direction[i]) == true && (_othellierSystem[moving_position] == 1-_playerTurn))
+		if (is_onboard(position, direction[i]) && (_othellierSystem[moving_position] == 1-_playerTurn))
 		{
 			while((_othellierSystem[moving_position+direction[i]] == 1-_playerTurn) && is_onboard(moving_position, direction[i]))
 			{
