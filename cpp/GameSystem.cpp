@@ -231,6 +231,14 @@ int GameSystem::evaluate()
 
 	if(opponent_pawns == 0)
 		bonus = bonus + 100;
+	if(_othellierSystem[0] == _playerTurn)
+		bonus = bonus + 3;
+	if(_othellierSystem[7] == _playerTurn)
+		bonus = bonus + 3;
+	if(_othellierSystem[56] == _playerTurn)
+		bonus = bonus + 3;
+	if(_othellierSystem[63] == _playerTurn)
+		bonus = bonus + 3;
 	
 	int liberty_degree = _nbEligiblePlayer-_nbEligibleOpponent;
 
