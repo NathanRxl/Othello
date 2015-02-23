@@ -4,6 +4,7 @@
 #include "GameSystem.h"
 #include "ia.h"
 #include <iostream>
+#include <assert.h>
 
 GameWindow::GameWindow() : QWidget()
 {
@@ -83,11 +84,17 @@ void GameWindow::playPawn(int position)
 	{
 		_gameSystem.play_position(position);
 		display_squares();
+
+		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
+		std::cout << "Nombre de Noirs: " << _gameSystem._nbOfBlack << std::endl;
+		std::cout << "Nombre de Blancs: " << _gameSystem._nbOfWhite << std::endl << std::endl;
+
 		if(_gameSystem.is_game_finished() == true)
 		{
 			_computerTurnButton->setEnabled(false);
 			_passButton->setEnabled(false);
 			_newGameButton->setEnabled(true);
+
 			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
 				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
 			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
@@ -117,7 +124,7 @@ void GameWindow::pass()
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = min_max_1(_gameSystem);
+	int chosenPosition = min_max(_gameSystem, -1, 2).first;
 	if(chosenPosition == -1)
 	{
 		_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
@@ -126,11 +133,21 @@ void GameWindow::computerTurn(){
 		_gameSystem._nbEligibleOpponent = nbEligiblePlayer;
 		_gameSystem._eligiblePosition = _gameSystem.eligible_position();
 		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
+
+		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
+		std::cout << "Nombre de Noirs: " << _gameSystem._nbOfBlack << std::endl;
+		std::cout << "Nombre de Blancs: " << _gameSystem._nbOfWhite << std::endl << std::endl;
 	}
 	else
 	{
 		_gameSystem.play_position(chosenPosition);
+		assert(_gameSystem._eligiblePosition.size() == _gameSystem._nbEligiblePlayer);
 		display_squares();
+
+		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
+		std::cout << "Nombre de Noirs: " << _gameSystem._nbOfBlack << std::endl;
+		std::cout << "Nombre de Blancs: " << _gameSystem._nbOfWhite << std::endl << std::endl;
+
 		if(_gameSystem.is_game_finished() == true)
 		{
 			_computerTurnButton->setEnabled(false);

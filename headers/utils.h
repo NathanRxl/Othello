@@ -6,5 +6,6 @@
 //Tests whether [position] is on the board
 bool is_onboard(int position, int direction);
 
-std::pair<int,int> max(int* position_value, std::vector<int> eligiblePosition);
-std::pair<int,int> min(int* position_value, std::vector<int> eligiblePosition);
+//Returns the index of the max in the table. Returns -1 if table is empty.
+int max(int* position_value, int size);
+int min(int* position_value, int size);

@@ -1,6 +1,7 @@
 #include "GameSystem.h"
 #include "utils.h"
 #include <iostream>
+#include <assert.h>
 
 GameSystem::GameSystem()
 {
@@ -17,9 +18,12 @@ void GameSystem::operator=(GameSystem gameSystem)
 	_nbOfWhite = gameSystem._nbOfWhite;
 	_nbEligiblePlayer = gameSystem._nbEligiblePlayer;
 	_nbEligibleOpponent = gameSystem._nbEligibleOpponent;
+	//_eligiblePosition = gameSystem._eligiblePosition;
 
 	std::vector<int>::iterator it=gameSystem._eligiblePosition.begin();
 	_eligiblePosition.assign(it, gameSystem._eligiblePosition.end());
+
+	assert(_eligiblePosition.size() == _nbEligiblePlayer);
 }
 
 void GameSystem::init_game(){
@@ -28,10 +32,10 @@ void GameSystem::init_game(){
 		for(int j=0; j<8; j++)
 			_othellierSystem[8*i+j]=-1;
 
-	_othellierSystem[8*3+3]=0;
-	_othellierSystem[8*3+4]=1;
-	_othellierSystem[8*4+3]=1;
-	_othellierSystem[8*4+4]=0;
+	_othellierSystem[8*3+3]=1;
+	_othellierSystem[8*3+4]=0;
+	_othellierSystem[8*4+3]=0;
+	_othellierSystem[8*4+4]=1;
 
 	_nbOfBlack = 2;
 	_nbOfWhite = 2;
@@ -40,6 +44,8 @@ void GameSystem::init_game(){
 	_nbEligibleOpponent = 4;
 
 	_eligiblePosition = eligible_position();
+
+	assert(_eligiblePosition.size() == _nbEligiblePlayer);
 }
 
 bool GameSystem::is_eligible(int position, int player)
@@ -162,7 +168,7 @@ void GameSystem::flip(int position)
 	{
 		int moving_position = position+direction[i];
 
-		if (is_onboard(position, direction[i]) && (_othellierSystem[moving_position] == 1-_playerTurn))
+		if (is_onboard(position, direction[i]) == true && (_othellierSystem[moving_position] == 1-_playerTurn))
 		{
 			while((_othellierSystem[moving_position+direction[i]] == 1-_playerTurn) && is_onboard(moving_position, direction[i]))
 			{
@@ -207,9 +213,11 @@ void GameSystem::play_position(int position)
 	_eligiblePosition.clear();
 	_eligiblePosition = eligible_position();
 
-	std::cout << "Tour du joueur: " << _playerTurn << std::endl;
+	assert(_eligiblePosition.size() == _nbEligiblePlayer);
+
+	/*std::cout << "Tour du joueur: " << _playerTurn << std::endl;
 	std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
-	std::cout << "Nombre de Blancs: " << _nbOfWhite << std::endl << std::endl;
+	std::cout << "Nombre de Blancs: " << _nbOfWhite << std::endl << std::endl;*/
 }
 
 bool GameSystem::is_game_finished()
@@ -248,6 +256,16 @@ int GameSystem::evaluate()
 	if(_othellierSystem[63] == _playerTurn)
 		bonus = bonus + corner_bonus;
 	
+	int corner_opponent_malus = -20;
+	if(_othellierSystem[0] == 1-_playerTurn)
+		bonus = bonus + corner_opponent_malus;
+	if(_othellierSystem[7] == 1-_playerTurn)
+		bonus = bonus + corner_opponent_malus;
+	if(_othellierSystem[56] == 1-_playerTurn)
+		bonus = bonus + corner_opponent_malus;
+	if(_othellierSystem[63] == 1-_playerTurn)
+		bonus = bonus + corner_opponent_malus;
+
 	int liberty_degree = _nbEligiblePlayer-_nbEligibleOpponent;
 
 	int grade = liberty_degree;

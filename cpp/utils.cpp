@@ -13,46 +13,46 @@ bool is_onboard(int position, int direction)
 	return return_value;
 }
 
-std::pair<int,int> max(int* position_value, std::vector<int> eligiblePosition)
+int max(int* position_value, int size)
 {
-	std::pair<int,int> values;
-	values.first = -1;
-	values.second = -1;
-	if (eligiblePosition.size() == 0)
-		return values;
+	int value;
+	int index;
+	value = -1000;
+	index = -1;
+	if (size == 0)
+		return -1;
 	else
 	{
-		for(unsigned int i=0; i<eligiblePosition.size(); ++i)
+		for(int i=0; i<size; ++i)
 		{
-			if(position_value[i] > values.second)
+			if(position_value[i] > value)
 			{
-				values.second = position_value[i];
-				values.first = eligiblePosition[i];
+				value = position_value[i];
+				index = i;
 			}
 		}
 	}
-	return values;
+	return index;
 }
 
-std::pair<int,int> min(int* position_value, std::vector<int> eligiblePosition)
+int min(int* position_value, int size)
 {
-	std::pair<int,int> values;
-	values.first = -1;
-	values.second = -1;
-	if (eligiblePosition.size() == 0)
-		return values;
+	int value;
+	int index;
+	value = 1000;
+	index = -1;
+	if (size == 0)
+		return -1;
 	else
 	{
-		values.first = 0;
-		values.second = position_value[0];
-		for(unsigned int i=0; i<eligiblePosition.size(); i++)
+		for(int i=0; i<size; ++i)
 		{
-			if(position_value[i] > values.second)
+			if(position_value[i] < value)
 			{
-				values.second = position_value[i];
-				values.first = eligiblePosition[i];
+				value = position_value[i];
+				index = i;
 			}
 		}
 	}
-	return values;
+	return index;
 }
