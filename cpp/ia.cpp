@@ -58,7 +58,7 @@ int min_max_1(GameSystem gameSystem, int player) {
 
 }
 
-std::pair<int,int> min_max(GameSystem gameSystem, int position_played, int depth_max)
+std::pair<int,int> min_max(GameSystem gameSystem, int position_played, int depth_max, int depth_max_max)
 {
 	if(gameSystem._nbEligiblePlayer != gameSystem._eligiblePosition.size())
 	{
@@ -87,24 +87,83 @@ std::pair<int,int> min_max(GameSystem gameSystem, int position_played, int depth
 	for(int i=0; i<gameSystem._nbEligiblePlayer; ++i)
 	{
 		possibleSystem.play_position(gameSystem._eligiblePosition[i]);
-		position_value[i] = min_max(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1).second;
+		position_value[i] = min_max(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1, depth_max_max).second;
+		
+
+		if(depth_max == depth_max_max)
+		{
+			int corner_bonus = 20;
+			if(possibleSystem._othellierSystem[0] == gameSystem._playerTurn)
+				position_value[i] += corner_bonus;
+			if(possibleSystem._othellierSystem[7] == gameSystem._playerTurn)
+				position_value[i] += corner_bonus;
+			if(possibleSystem._othellierSystem[56] == gameSystem._playerTurn)
+				position_value[i] += corner_bonus;
+			if(possibleSystem._othellierSystem[63] == gameSystem._playerTurn)
+				position_value[i] += corner_bonus;
+		
+
+			//We give a malus when we play in a position adjacent to a corner
+			int corner_opponent_malus = -20;
+			if(possibleSystem._othellierSystem[1] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[6] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[8] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[9] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[14] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[15] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[48] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[49] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[55] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[54] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[57] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+			if(possibleSystem._othellierSystem[62] == gameSystem._playerTurn)
+				position_value[i] += corner_opponent_malus;
+		}
 		possibleSystem = gameSystem;
 	}
 
-	int index = max(position_value, gameSystem._nbEligiblePlayer);
-
-	if(index == -1)
+	int index1 = max(position_value, gameSystem._nbEligiblePlayer);
+	int index2 = max(position_value, gameSystem._nbEligiblePlayer);
+	
+	/*if(index == -1)
 	{
-		std::cout<<"le nombre de coups possibles est: "<<gameSystem._nbEligiblePlayer;
+		std::cout<<"le nombre de coups possibles est: "<<gameSystem._nbEligiblePlayer<<std::endl;
 		best_position_value.first = -1;
 		return best_position_value;
-	}
-	assert(index != -1);
+	}*/
+	//assert(index != -1);
 
 	if(depth_max%2 == 1)
-		best_position_value.first = gameSystem._eligiblePosition[index];
+	{
+		if(index1 == -1)
+		{
+			std::cout<<"le nombre de coups possibles est: "<<gameSystem._nbEligiblePlayer<<std::endl;
+			best_position_value.first = -1;
+			return best_position_value;
+		}
+		best_position_value.first = gameSystem._eligiblePosition[index1];
+	}
 	else
-		best_position_value.first = gameSystem._eligiblePosition[index];
+	{
+		if(index2 == -1)
+		{
+			std::cout<<"le nombre de coups possibles est: "<<gameSystem._nbEligiblePlayer<<std::endl;
+			best_position_value.first = -1;
+			return best_position_value;
+		}
+		best_position_value.first = gameSystem._eligiblePosition[index2];
+	}
 
 	delete[] position_value;
 	return best_position_value;

@@ -96,11 +96,23 @@ void GameWindow::playPawn(int position)
 			_newGameButton->setEnabled(true);
 
 			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
+			{
 				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
+				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
+				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+			}
 			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
+			{
 				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
+				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
+				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+			}
 			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
+			{
 				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
+				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
+				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+			}
 		}
 	}
 }
@@ -120,11 +132,13 @@ void GameWindow::pass()
 	int nbEligiblePlayer = _gameSystem._nbEligiblePlayer;
 	_gameSystem._nbEligiblePlayer = _gameSystem._nbEligibleOpponent;
 	_gameSystem._nbEligibleOpponent = nbEligiblePlayer;
+	_gameSystem._eligiblePosition = _gameSystem.eligible_position();
 	std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = min_max(_gameSystem, -1, 2).first;
+	int chosenPosition = min_max(_gameSystem, -1, 6, 6).first;
+	
 	if(chosenPosition == -1)
 	{
 		_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
@@ -154,11 +168,23 @@ void GameWindow::computerTurn(){
 			_passButton->setEnabled(false);
 			_newGameButton->setEnabled(true);
 			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
+			{
 				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
+				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
+				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+			}
 			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
+			{
 				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
+				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
+				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+			}
 			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
+			{
 				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
+				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
+				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+			}
 		}
 	}
 }

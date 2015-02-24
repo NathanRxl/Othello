@@ -228,10 +228,10 @@ void GameSystem::play_position(int position)
 				possibility = possibility + 1;
 				_nbEligiblePlayer += 1;
 
-				std::cout<<"possibility vaut "<<possibility<<endl;
-				cout<<"nbEligiblePlayer vaut "<<_nbEligiblePlayer<<endl<<endl;
+				//std::cout<<"possibility vaut "<<possibility<<endl;
+				//cout<<"nbEligiblePlayer vaut "<<_nbEligiblePlayer<<endl<<endl;
 			}
-			std::cout<<"j vaut "<<j<<endl;
+			//std::cout<<"j vaut "<<j<<endl;
 		//}
 	}
 
@@ -276,7 +276,7 @@ int GameSystem::evaluate()
 
 	if(opponent_pawns == 0)
 		bonus = bonus + 100;
-	int corner_bonus = 10;
+	int corner_bonus = 0;
 	if(_othellierSystem[0] == _playerTurn)
 		bonus = bonus + corner_bonus;
 	if(_othellierSystem[7] == _playerTurn)
