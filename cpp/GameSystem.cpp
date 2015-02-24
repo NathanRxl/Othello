@@ -3,6 +3,8 @@
 #include <iostream>
 #include <assert.h>
 
+using namespace std;
+
 GameSystem::GameSystem()
 {
 	_othellierSystem = new int[64];
@@ -208,10 +210,38 @@ void GameSystem::play_position(int position)
 	_nbOfWhite = _nbOfWhite + (1-_playerTurn);
 	this->flip(position);
 	_playerTurn = 1-_playerTurn;
-	_nbEligiblePlayer = nb_eligible(_playerTurn);
+	_nbEligiblePlayer = 0;
 	_nbEligibleOpponent = nb_eligible(1-_playerTurn);
+
 	_eligiblePosition.clear();
-	_eligiblePosition = eligible_position();
+	//_eligiblePosition = eligible_position();
+
+
+	int possibility = 0;
+	for(int j=0; j<64; ++j)
+	{
+		//if(possibility < _nbEligiblePlayer)
+		//{
+			if(is_eligible(j, _playerTurn))
+			{
+				_eligiblePosition.push_back(j);
+				possibility = possibility + 1;
+				_nbEligiblePlayer += 1;
+
+				std::cout<<"possibility vaut "<<possibility<<endl;
+				cout<<"nbEligiblePlayer vaut "<<_nbEligiblePlayer<<endl<<endl;
+			}
+			std::cout<<"j vaut "<<j<<endl;
+		//}
+	}
+
+
+	if(_nbEligiblePlayer != _eligiblePosition.size())
+	{
+			std::cout<<"le vector et le tableau n'ont pas la même taille"<<std::endl;
+			std::cout<<"le vecteur est de taille "<<_eligiblePosition.size()<<std::endl;
+			std::cout<<"le tableau est de taille "<<_nbEligiblePlayer<<std::endl;
+	}
 
 	assert(_eligiblePosition.size() == _nbEligiblePlayer);
 
