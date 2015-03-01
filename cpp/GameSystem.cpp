@@ -34,10 +34,10 @@ void GameSystem::init_game(){
 		for(int j=0; j<8; j++)
 			_othellierSystem[8*i+j]=-1;
 
-	_othellierSystem[8*3+3]=1;
-	_othellierSystem[8*3+4]=0;
-	_othellierSystem[8*4+3]=0;
-	_othellierSystem[8*4+4]=1;
+	_othellierSystem[8*3+3]=0;
+	_othellierSystem[8*3+4]=1;
+	_othellierSystem[8*4+3]=1;
+	_othellierSystem[8*4+4]=0;
 
 	_nbOfBlack = 2;
 	_nbOfWhite = 2;
@@ -225,7 +225,7 @@ void GameSystem::play_position(int position)
 			if(is_eligible(j, _playerTurn))
 			{
 				_eligiblePosition.push_back(j);
-				possibility = possibility + 1;
+				//possibility = possibility + 1;
 				_nbEligiblePlayer += 1;
 
 				//std::cout<<"possibility vaut "<<possibility<<endl;
@@ -276,7 +276,7 @@ int GameSystem::evaluate()
 
 	if(opponent_pawns == 0)
 		bonus = bonus + 100;
-	int corner_bonus = 0;
+	int corner_bonus = 20;
 	if(_othellierSystem[0] == _playerTurn)
 		bonus = bonus + corner_bonus;
 	if(_othellierSystem[7] == _playerTurn)
@@ -295,6 +295,32 @@ int GameSystem::evaluate()
 		bonus = bonus + corner_opponent_malus;
 	if(_othellierSystem[63] == 1-_playerTurn)
 		bonus = bonus + corner_opponent_malus;
+
+	int corner_adjacent_malus = -10;
+	if(_othellierSystem[1] == _playerTurn && _othellierSystem[0] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[6] == _playerTurn && _othellierSystem[7] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[8] == _playerTurn && _othellierSystem[0] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[9] == _playerTurn && _othellierSystem[0] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[14] == _playerTurn && _othellierSystem[7] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[15] == _playerTurn && _othellierSystem[7] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[48] == _playerTurn && _othellierSystem[56] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[49] == _playerTurn && _othellierSystem[56] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[55] == _playerTurn && _othellierSystem[63] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[54] == _playerTurn && _othellierSystem[63] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[57] == _playerTurn && _othellierSystem[56] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
+	if(_othellierSystem[62] == _playerTurn && _othellierSystem[63] != _playerTurn)
+		bonus = bonus + corner_adjacent_malus;
 
 	int liberty_degree = _nbEligiblePlayer-_nbEligibleOpponent;
 

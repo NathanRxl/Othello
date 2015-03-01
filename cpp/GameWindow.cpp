@@ -137,8 +137,11 @@ void GameWindow::pass()
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = min_max(_gameSystem, -1, 6, 6).first;
-	
+	int chosenPosition = min_max(_gameSystem, -1, 5).first;
+	/*int alpha =-10000;
+	int beta= 10000;
+	int chosenPosition = alphaBeta(_gameSystem,-1, 5, alpha, beta).first;*/
+
 	if(chosenPosition == -1)
 	{
 		_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
