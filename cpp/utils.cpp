@@ -17,7 +17,9 @@ bool stay_onboard(int position, int direction)
 
 std::pair<int, int> max(int* table_value, int size)
 {
-	assert(size>0);
+	if(size == 0)
+		return std::pair<int, int> (-1, 0);
+
 	int max_value = table_value[0];
 	int max_index = 0;
 	for(int i=1; i<size; ++i)
@@ -33,7 +35,9 @@ std::pair<int, int> max(int* table_value, int size)
 
 std::pair<int, int> min(int* table_value, int size)
 {
-	assert(size>0);
+	if(size == 0)
+		return std::pair<int, int> (-1, 0);
+	
 	int min_value = table_value[0];
 	int min_index = 0;
 	for(int i=1; i<size; ++i)

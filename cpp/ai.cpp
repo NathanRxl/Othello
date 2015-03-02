@@ -47,7 +47,7 @@ int min_max_1(GameSystem gameSystem, int player) {
 int min_max_2(GameSystem gameSystem, int player){
 	//AI algorithm 2. Returns the best position to play anticipating opponent next plays thanks to a min-max algorithm
 	//non optimized with alpha-beta pruning.
-	int depth_max = 1;
+	int depth_max = 5;
 	return min_max_recursion(gameSystem, -1, depth_max).first;
 }
 

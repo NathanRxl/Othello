@@ -274,10 +274,13 @@ std::vector<int> GameSystem::eligible_position()
 	int possibility = 0;
 	for(int j=0; j<64; ++j)
 	{
-		if(is_eligible(j, _playerTurn))
+		if(possibility < _nbEligiblePlayer)
 		{
-			possible_position.push_back(j);
-			possibility = possibility + 1;
+			if(is_eligible(j, _playerTurn))
+			{
+				possible_position.push_back(j);
+				possibility = possibility + 1;
+			}
 		}
 	}
 

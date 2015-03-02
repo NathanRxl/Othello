@@ -48,7 +48,7 @@ GameWindow::GameWindow() : QWidget()
 
 	_passButton = new QPushButton("Passer", this);
 	QObject::connect(_passButton, SIGNAL(clicked()), this, SLOT(pass()));
-	_passButton->setEnabled(true);
+	_passButton->setEnabled(false);
 	buttonsLayout->addWidget(_passButton);
 
 	_newGameButton = new QPushButton("Nouvelle Partie", this);
@@ -94,7 +94,6 @@ void GameWindow::playPawn(int position)
 
 		if(_gameSystem._nbEligiblePlayer == 0)
 			_passButton->setEnabled(true);
-
 		if(_gameSystem.is_game_finished() == true)
 		{
 			_computerTurnButton->setEnabled(false);
@@ -142,21 +141,22 @@ void GameWindow::newGame()
 
 void GameWindow::pass()
 {
-	_gameSystem._playerTurn = 1-_gameSystem._playerTurn;
-	_gameSystem._nbEligibleOpponent = _gameSystem._eligiblePosition.size();
-	_gameSystem._eligiblePosition.clear();
+	_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
+	int nbEligiblePlayer = _gameSystem._nbEligiblePlayer;
+	_gameSystem._nbEligiblePlayer = _gameSystem._nbEligibleOpponent;
+	_gameSystem._nbEligibleOpponent = nbEligiblePlayer;
 	_gameSystem._eligiblePosition = _gameSystem.eligible_position();
-	_gameSystem._nbEligiblePlayer = _gameSystem._eligiblePosition.size();
 	std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
-
+	_passButton->setEnabled(false);
 																	std::cout << "The contents of _eligiblePosition are:";
 																	for (std::vector<int>::iterator it = _gameSystem._eligiblePosition.begin(); it != _gameSystem._eligiblePosition.end(); ++it)
 																		std::cout << ' ' << *it;
 																	std::cout << std::endl;
+						
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = min_max_recursion(_gameSystem, -1, 5).first;
+	int chosenPosition = min_max_2(_gameSystem, _gameSystem._playerTurn);
 	/*int alpha =-10000;
 	int beta= 10000;
 	int chosenPosition = alphaBeta(_gameSystem,-1, 5, alpha, beta).first;*/
