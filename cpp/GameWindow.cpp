@@ -2,9 +2,11 @@
 #include <QGroupBox>
 #include "GameWindow.h"
 #include "GameSystem.h"
-#include "ia.h"
+#include "ai.h"
+
+//Debug
 #include <iostream>
-#include <assert.h>
+#include <cassert>
 
 GameWindow::GameWindow() : QWidget()
 {
@@ -85,34 +87,46 @@ void GameWindow::playPawn(int position)
 		_gameSystem.play_position(position);
 		display_squares();
 
-		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
-		std::cout << "Nombre de Noirs: " << _gameSystem._nbOfBlack << std::endl;
-		std::cout << "Nombre de Blancs: " << _gameSystem._nbOfWhite << std::endl << std::endl;
+														std::cout << "The contents of _eligiblePosition are:";
+														for (std::vector<int>::iterator it = _gameSystem._eligiblePosition.begin(); it != _gameSystem._eligiblePosition.end(); ++it)
+															std::cout << ' ' << *it;
+														std::cout << std::endl;
+
+		if(_gameSystem._nbEligiblePlayer == 0)
+			_passButton->setEnabled(true);
 
 		if(_gameSystem.is_game_finished() == true)
 		{
 			_computerTurnButton->setEnabled(false);
 			_passButton->setEnabled(false);
 			_newGameButton->setEnabled(true);
-
 			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
 			{
-				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
-				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
-				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+				std::cout << "Partie terminee." << std::endl << std::endl;
+				std::cout << "Noir a " << _gameSystem._nbOfBlack << " pions." << std::endl;
+				std::cout << "Blanc a " << _gameSystem._nbOfWhite << " pions." << std::endl;
+				std::cout << "Vainqueur: Joueur 1 (Noirs)." << std::endl;
 			}
 			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
 			{
-				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
-				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
-				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+				std::cout << "Partie terminee." << std::endl << std::endl;
+				std::cout << "Noir a " << _gameSystem._nbOfBlack << " pions."<< std::endl;
+				std::cout << "Blanc a " << _gameSystem._nbOfWhite << " pions."<< std::endl;
+				std::cout << "Vainqueur: Joueur 2 (Blancs)" << std::endl;
 			}
 			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
 			{
-				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
-				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
-				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
+				std::cout << "Partie terminee." << std::endl << std::endl;
+				std::cout << "Noir a "<< _gameSystem._nbOfBlack << " pions." << std::endl;
+				std::cout << "Blanc a "<< _gameSystem._nbOfWhite << " pions." << std::endl;
+				std::cout << "Ex-aequo." << std::endl;
 			}
+		}
+		else
+		{
+				std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
+				std::cout << "Nombre de Noirs: " << _gameSystem._nbOfBlack << std::endl;
+				std::cout << "Nombre de Blancs: " << _gameSystem._nbOfWhite << std::endl << std::endl;
 		}
 	}
 }
@@ -122,72 +136,34 @@ void GameWindow::newGame()
     _gameSystem.init_game();
 	display_squares();
 	_computerTurnButton->setEnabled(true);
-	_passButton->setEnabled(true);
+	_passButton->setEnabled(false);
 	_newGameButton->setEnabled(false);
 }
 
 void GameWindow::pass()
 {
-	_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
-	int nbEligiblePlayer = _gameSystem._nbEligiblePlayer;
-	_gameSystem._nbEligiblePlayer = _gameSystem._nbEligibleOpponent;
-	_gameSystem._nbEligibleOpponent = nbEligiblePlayer;
+	_gameSystem._playerTurn = 1-_gameSystem._playerTurn;
+	_gameSystem._nbEligibleOpponent = _gameSystem._eligiblePosition.size();
+	_gameSystem._eligiblePosition.clear();
 	_gameSystem._eligiblePosition = _gameSystem.eligible_position();
+	_gameSystem._nbEligiblePlayer = _gameSystem._eligiblePosition.size();
 	std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
+
+																	std::cout << "The contents of _eligiblePosition are:";
+																	for (std::vector<int>::iterator it = _gameSystem._eligiblePosition.begin(); it != _gameSystem._eligiblePosition.end(); ++it)
+																		std::cout << ' ' << *it;
+																	std::cout << std::endl;
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = min_max(_gameSystem, -1, 5).first;
+	int chosenPosition = min_max_recursion(_gameSystem, -1, 5).first;
 	/*int alpha =-10000;
 	int beta= 10000;
 	int chosenPosition = alphaBeta(_gameSystem,-1, 5, alpha, beta).first;*/
 
 	if(chosenPosition == -1)
-	{
-		_gameSystem._playerTurn = 1 - _gameSystem._playerTurn;
-		int nbEligiblePlayer = _gameSystem._nbEligiblePlayer;
-		_gameSystem._nbEligiblePlayer = _gameSystem._nbEligibleOpponent;
-		_gameSystem._nbEligibleOpponent = nbEligiblePlayer;
-		_gameSystem._eligiblePosition = _gameSystem.eligible_position();
-		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
-
-		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
-		std::cout << "Nombre de Noirs: " << _gameSystem._nbOfBlack << std::endl;
-		std::cout << "Nombre de Blancs: " << _gameSystem._nbOfWhite << std::endl << std::endl;
-	}
+		pass();
+		
 	else
-	{
-		_gameSystem.play_position(chosenPosition);
-		assert(_gameSystem._eligiblePosition.size() == _gameSystem._nbEligiblePlayer);
-		display_squares();
-
-		std::cout << "Tour du joueur: " << _gameSystem._playerTurn << std::endl;
-		std::cout << "Nombre de Noirs: " << _gameSystem._nbOfBlack << std::endl;
-		std::cout << "Nombre de Blancs: " << _gameSystem._nbOfWhite << std::endl << std::endl;
-
-		if(_gameSystem.is_game_finished() == true)
-		{
-			_computerTurnButton->setEnabled(false);
-			_passButton->setEnabled(false);
-			_newGameButton->setEnabled(true);
-			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
-			{
-				std::cout << "Partie terminee. Vainqueur: Joueur 1 (Noirs)" << std::endl << std::endl;
-				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
-				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
-			}
-			if(_gameSystem._nbOfBlack<_gameSystem._nbOfWhite)
-			{
-				std::cout << "Partie terminee. Vainqueur: Joueur 2 (Blancs)" << std::endl << std::endl;
-				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
-				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
-			}
-			if(_gameSystem._nbOfBlack==_gameSystem._nbOfWhite)
-			{
-				std::cout << "Partie terminee. Ex-aequo." << std::endl << std::endl;
-				std::cout<< "Noir a "<<_gameSystem._nbOfBlack<<" pions"<<std::endl;
-				std::cout<< "Blanc a "<<_gameSystem._nbOfWhite<<" pions"<<std::endl;
-			}
-		}
-	}
+		playPawn(chosenPosition);
 }

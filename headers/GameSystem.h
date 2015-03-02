@@ -21,16 +21,16 @@ class GameSystem
 	void init_game();
 	GameSystem();
 	void operator=(GameSystem gameSystem);
-	bool is_eligible(int position, int player); //Intérêt à discuter ensemble.
-	int nb_eligible(int player); //Intérêt à discuter ensemble.
-	//Flips the neccesary pawns of an othellier as if [position] is played.
+	bool is_eligible(int position, int player);
+	int nb_eligible(int player);
+	//Flips the necessary pawns of an othellier as if [position] is played.
 	//This function doesn't play in "position" and is only a tool for [play_position]
 	void flip(int position);
 	//Plays a given [position] on the system board and does the necessary flips
 	void play_position(int position);
 	bool is_game_finished();
 	int evaluate();
-	std::vector<int> eligible_position(); //Returns table of possible position for the player
+	std::vector<int> eligible_position(); //Returns table of possible positions for the player
 };
 
 #endif

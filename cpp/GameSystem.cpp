@@ -1,9 +1,33 @@
 #include "GameSystem.h"
 #include "utils.h"
-#include <iostream>
-#include <assert.h>
 
-using namespace std;
+//Debug
+#include <cassert>
+#include <iostream>
+
+void GameSystem::init_game(){
+	//Initiates the othellier and launches the game: black begins
+	
+	//Initiates all squares at "unoccupied" state
+	for(int i=0; i<8; i++)
+		for(int j=0; j<8; j++)
+			_othellierSystem[8*i+j]=-1;
+
+	//Places the 4 pawns at the center of the board
+	_othellierSystem[8*3+3]=0;
+	_othellierSystem[8*3+4]=1;
+	_othellierSystem[8*4+3]=1;
+	_othellierSystem[8*4+4]=0;
+
+	//Initiates the other GameSystem fields
+	_nbOfBlack = 2;
+	_nbOfWhite = 2;
+	_playerTurn = 1; //Black
+	_nbEligiblePlayer = 4;
+	_nbEligibleOpponent = 4;
+	_eligiblePosition = eligible_position();
+	assert(_eligiblePosition.size() == _nbEligiblePlayer);
+}
 
 GameSystem::GameSystem()
 {
@@ -20,33 +44,7 @@ void GameSystem::operator=(GameSystem gameSystem)
 	_nbOfWhite = gameSystem._nbOfWhite;
 	_nbEligiblePlayer = gameSystem._nbEligiblePlayer;
 	_nbEligibleOpponent = gameSystem._nbEligibleOpponent;
-	//_eligiblePosition = gameSystem._eligiblePosition;
-
-	std::vector<int>::iterator it=gameSystem._eligiblePosition.begin();
-	_eligiblePosition.assign(it, gameSystem._eligiblePosition.end());
-
-	assert(_eligiblePosition.size() == _nbEligiblePlayer);
-}
-
-void GameSystem::init_game(){
-	//Initiates the othellier and launches the game: black begins
-	for(int i=0; i<8; i++)
-		for(int j=0; j<8; j++)
-			_othellierSystem[8*i+j]=-1;
-
-	_othellierSystem[8*3+3]=0;
-	_othellierSystem[8*3+4]=1;
-	_othellierSystem[8*4+3]=1;
-	_othellierSystem[8*4+4]=0;
-
-	_nbOfBlack = 2;
-	_nbOfWhite = 2;
-	_playerTurn = 1; //Black
-	_nbEligiblePlayer = 4;
-	_nbEligibleOpponent = 4;
-
-	_eligiblePosition = eligible_position();
-
+	_eligiblePosition.assign(gameSystem._eligiblePosition.begin(), gameSystem._eligiblePosition.end());
 	assert(_eligiblePosition.size() == _nbEligiblePlayer);
 }
 
@@ -89,15 +87,15 @@ bool GameSystem::is_eligible(int position, int player)
 		{
 			int moving_position = position+direction[i];
 
-			if (is_onboard(position, direction[i]) == false || (_othellierSystem[moving_position] != 1-player))
+			if (stay_onboard(position, direction[i]) == false || (_othellierSystem[moving_position] != 1-player))
 				check_direction[i] = false;
 			else
 			{
-				while((_othellierSystem[moving_position+direction[i]] == 1-player) && is_onboard(moving_position, direction[i]))
+				while((_othellierSystem[moving_position+direction[i]] == 1-player) && stay_onboard(moving_position, direction[i]))
 				{
 					moving_position += direction[i];
 				}
-				if (is_onboard(moving_position,direction[i]))
+				if (stay_onboard(moving_position,direction[i]))
 				{
 					if (_othellierSystem[moving_position+direction[i]] == player)
 					{
@@ -142,7 +140,7 @@ int GameSystem::nb_eligible(int player)
 
 void GameSystem::flip(int position)
 {
-	//Flip the neccesary pawns of an othellier as if "position" is played.
+	//Flips the neccesary pawns of an othellier as if "position" is played.
 	//This function doesn't play in "position"
 
 	//directions: up =         8*  0 +(-1) = -1
@@ -170,13 +168,13 @@ void GameSystem::flip(int position)
 	{
 		int moving_position = position+direction[i];
 
-		if (is_onboard(position, direction[i]) == true && (_othellierSystem[moving_position] == 1-_playerTurn))
+		if (stay_onboard(position, direction[i]) == true && (_othellierSystem[moving_position] == 1-_playerTurn))
 		{
-			while((_othellierSystem[moving_position+direction[i]] == 1-_playerTurn) && is_onboard(moving_position, direction[i]))
+			while((_othellierSystem[moving_position+direction[i]] == 1-_playerTurn) && stay_onboard(moving_position, direction[i]))
 			{
 				moving_position += direction[i];
 			}
-			if (is_onboard(moving_position,direction[i]))
+			if (stay_onboard(moving_position,direction[i]))
 			{
 				if (_othellierSystem[moving_position+direction[i]] == _playerTurn)
 				{
@@ -210,44 +208,10 @@ void GameSystem::play_position(int position)
 	_nbOfWhite = _nbOfWhite + (1-_playerTurn);
 	this->flip(position);
 	_playerTurn = 1-_playerTurn;
-	_nbEligiblePlayer = 0;
-	_nbEligibleOpponent = nb_eligible(1-_playerTurn);
-
 	_eligiblePosition.clear();
-	//_eligiblePosition = eligible_position();
-
-
-	int possibility = 0;
-	for(int j=0; j<64; ++j)
-	{
-		//if(possibility < _nbEligiblePlayer)
-		//{
-			if(is_eligible(j, _playerTurn))
-			{
-				_eligiblePosition.push_back(j);
-				//possibility = possibility + 1;
-				_nbEligiblePlayer += 1;
-
-				//std::cout<<"possibility vaut "<<possibility<<endl;
-				//cout<<"nbEligiblePlayer vaut "<<_nbEligiblePlayer<<endl<<endl;
-			}
-			//std::cout<<"j vaut "<<j<<endl;
-		//}
-	}
-
-
-	if(_nbEligiblePlayer != _eligiblePosition.size())
-	{
-			std::cout<<"le vector et le tableau n'ont pas la même taille"<<std::endl;
-			std::cout<<"le vecteur est de taille "<<_eligiblePosition.size()<<std::endl;
-			std::cout<<"le tableau est de taille "<<_nbEligiblePlayer<<std::endl;
-	}
-
-	assert(_eligiblePosition.size() == _nbEligiblePlayer);
-
-	/*std::cout << "Tour du joueur: " << _playerTurn << std::endl;
-	std::cout << "Nombre de Noirs: " << _nbOfBlack << std::endl;
-	std::cout << "Nombre de Blancs: " << _nbOfWhite << std::endl << std::endl;*/
+	_eligiblePosition = eligible_position();
+	_nbEligiblePlayer = _eligiblePosition.size();
+	_nbEligibleOpponent = nb_eligible(1-_playerTurn);
 }
 
 bool GameSystem::is_game_finished()
@@ -271,60 +235,34 @@ bool GameSystem::is_game_finished()
 
 int GameSystem::evaluate()
 {
-	int bonus = 0;
+	//Computes the grade of the board
 	int opponent_pawns = _nbOfBlack*(1-_playerTurn)+_nbOfWhite*_playerTurn;
+	int liberty_degree = _nbEligiblePlayer-_nbEligibleOpponent;
+	int grade = liberty_degree;
 
+	//Compute the bonuses in addition to the grade
+	int bonus = 0;
+
+	//Bonus if the player wins with this board
 	if(opponent_pawns == 0)
 		bonus = bonus + 100;
-	int corner_bonus = 20;
-	if(_othellierSystem[0] == _playerTurn)
-		bonus = bonus + corner_bonus;
-	if(_othellierSystem[7] == _playerTurn)
-		bonus = bonus + corner_bonus;
-	if(_othellierSystem[56] == _playerTurn)
-		bonus = bonus + corner_bonus;
-	if(_othellierSystem[63] == _playerTurn)
-		bonus = bonus + corner_bonus;
-	
-	int corner_opponent_malus = -20;
-	if(_othellierSystem[0] == 1-_playerTurn)
-		bonus = bonus + corner_opponent_malus;
-	if(_othellierSystem[7] == 1-_playerTurn)
-		bonus = bonus + corner_opponent_malus;
-	if(_othellierSystem[56] == 1-_playerTurn)
-		bonus = bonus + corner_opponent_malus;
-	if(_othellierSystem[63] == 1-_playerTurn)
-		bonus = bonus + corner_opponent_malus;
-
-	int corner_adjacent_malus = -10;
-	if(_othellierSystem[1] == _playerTurn && _othellierSystem[0] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[6] == _playerTurn && _othellierSystem[7] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[8] == _playerTurn && _othellierSystem[0] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[9] == _playerTurn && _othellierSystem[0] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[14] == _playerTurn && _othellierSystem[7] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[15] == _playerTurn && _othellierSystem[7] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[48] == _playerTurn && _othellierSystem[56] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[49] == _playerTurn && _othellierSystem[56] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[55] == _playerTurn && _othellierSystem[63] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[54] == _playerTurn && _othellierSystem[63] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[57] == _playerTurn && _othellierSystem[56] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-	if(_othellierSystem[62] == _playerTurn && _othellierSystem[63] != _playerTurn)
-		bonus = bonus + corner_adjacent_malus;
-
-	int liberty_degree = _nbEligiblePlayer-_nbEligibleOpponent;
-
-	int grade = liberty_degree;
+	//Bonus if the player has a pawn in a corner of the board
+	int corner_bonus = 10;
+	bonus += ((_othellierSystem[0]==_playerTurn) +  (_othellierSystem[7]==_playerTurn) + 
+			 (_othellierSystem[56]==_playerTurn) + (_othellierSystem[63]==_playerTurn))*corner_bonus;
+	//Malus if the opponent has a pawn in corner of the board
+	int corner_opponent_malus = -10;
+	bonus += ((_othellierSystem[0]==1-_playerTurn) +  (_othellierSystem[7]==1-_playerTurn) +
+			 (_othellierSystem[56]==1-_playerTurn) + (_othellierSystem[63]==1-_playerTurn))*corner_opponent_malus;
+	//Malus if the player has a pawn in a position adjacent to a corner
+	int corner_adjacent_malus = -5;
+	bonus += ((_othellierSystem[1]==_playerTurn) +  (_othellierSystem[6]==_playerTurn) +
+			  (_othellierSystem[8]==_playerTurn) +  (_othellierSystem[9]==_playerTurn) +
+			 (_othellierSystem[14]==_playerTurn) + (_othellierSystem[15]==_playerTurn) +
+			 (_othellierSystem[48]==_playerTurn) + (_othellierSystem[49]==_playerTurn) +
+			 (_othellierSystem[49]==_playerTurn) + (_othellierSystem[55]==_playerTurn) +
+			 (_othellierSystem[54]==_playerTurn) + (_othellierSystem[57]==_playerTurn) +
+			 (_othellierSystem[62]==_playerTurn))*corner_adjacent_malus;
 
 	return grade+bonus;
 }
@@ -336,13 +274,10 @@ std::vector<int> GameSystem::eligible_position()
 	int possibility = 0;
 	for(int j=0; j<64; ++j)
 	{
-		if(possibility < _nbEligiblePlayer)
+		if(is_eligible(j, _playerTurn))
 		{
-			if(is_eligible(j, _playerTurn))
-			{
-				possible_position.push_back(j);
-				possibility = possibility + 1;
-			}
+			possible_position.push_back(j);
+			possibility = possibility + 1;
 		}
 	}
 

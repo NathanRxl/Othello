@@ -1,58 +1,48 @@
 #include "utils.h"
 #include <cmath>
 
-bool is_onboard(int position, int direction)
-{
-	//Tests whether [position] is on the board
+//Debug
+#include <cassert>
 
-	bool return_value=true;
-	if (abs((position%8) - ((position+direction)%8)) > 1) //Exiting the frame through upper or lower edge.
+bool stay_onboard(int position, int direction)
+{
+	//Tests whether [position+direction] stays on the board, that is to say if position and position+direction are adjacent
+	bool return_value = true;
+	if (abs((position%8)-((position+direction)%8)) > 1) //Exiting the frame through upper or lower edge.
 		return_value=false;
 	if (abs((position/8) - ((position+direction)/8)) > 1)//Exiting the frame through right or left edge.
 		return_value=false;
 	return return_value;
 }
 
-int max(int* position_value, int size)
+std::pair<int, int> max(int* table_value, int size)
 {
-	int value;
-	int index;
-	value = -1000;
-	index = -1;
-	if (size == 0)
-		return -1;
-	else
+	assert(size>0);
+	int max_value = table_value[0];
+	int max_index = 0;
+	for(int i=1; i<size; ++i)
 	{
-		for(int i=0; i<size; ++i)
+		if(table_value[i] > max_value)
 		{
-			if(position_value[i] > value)
-			{
-				value = position_value[i];
-				index = i;
-			}
+			max_value = table_value[i];
+			max_index = i;
 		}
 	}
-	return index;
+	return std::pair<int, int> (max_index, max_value);
 }
 
-int min(int* position_value, int size)
+std::pair<int, int> min(int* table_value, int size)
 {
-	int value;
-	int index;
-	value = 1000;
-	index = -1;
-	if (size == 0)
-		return -1;
-	else
+	assert(size>0);
+	int min_value = table_value[0];
+	int min_index = 0;
+	for(int i=1; i<size; ++i)
 	{
-		for(int i=0; i<size; ++i)
+		if(table_value[i] < min_value)
 		{
-			if(position_value[i] < value)
-			{
-				value = position_value[i];
-				index = i;
-			}
+			min_value = table_value[i];
+			min_index = i;
 		}
 	}
-	return index;
+	return std::pair<int, int> (min_index, min_value);
 }

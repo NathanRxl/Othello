@@ -1,11 +1,10 @@
 #pragma once
 
-#include <utility>
 #include <vector>
 
 //Tests whether [position] is on the board
-bool is_onboard(int position, int direction);
+bool stay_onboard(int position, int direction);
 
-//Returns the index of the max in the table. Returns -1 if table is empty.
-int max(int* position_value, int size);
-int min(int* position_value, int size);
+//Returns the pair (index of the max in the table, max in the table). Returns -1 if table is empty.
+std::pair<int, int> max(int* table_value, int size);
+std::pair<int, int> min(int* table_value, int size);
