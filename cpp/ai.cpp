@@ -44,15 +44,9 @@ int min_max_1(GameSystem gameSystem, int player) {
 	}
 }
 
-int min_max_2(GameSystem gameSystem, int player){
-	//AI algorithm 2. Returns the best position to play anticipating opponent next plays thanks to a min-max algorithm
-	//non optimized with alpha-beta pruning.
-	int depth_max = 5;
-	return min_max_recursion(gameSystem, -1, depth_max).first;
-}
-
 std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played, int depth_max)
 {	//Min-max recursive algorithm. Return a pair (position, value of the position).
+	//depth_max doit être impair
 	if(gameSystem._nbEligiblePlayer != gameSystem._eligiblePosition.size())
 	{
 			std::cout<<"le vector et le tableau n'ont pas la même taille"<<std::endl;
@@ -69,6 +63,8 @@ std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played,
 
 	if(depth_max == 0 || gameSystem._nbEligiblePlayer == 0)
 	{
+		gameSystem._playerTurn = 1-gameSystem._playerTurn; 
+
 		best_position_value.first = position_played;
 		best_position_value.second = gameSystem.evaluate();
 		return best_position_value;
@@ -82,6 +78,8 @@ std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played,
 		possibleSystem.play_position(gameSystem._eligiblePosition[i]);
 		position_value[i] = min_max_recursion(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1).second;
 		possibleSystem = gameSystem;
+		/*if(depth_max == 1)
+			std::cout<<"valeur possible: "<<position_value[i]<<std::endl;*/
 	}
 
 
@@ -90,7 +88,6 @@ std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played,
 		std::pair<int, int> max_index_value = max(position_value, gameSystem._nbEligiblePlayer);
 		if(max_index_value.first == -1)
 		{
-			std::cout<<"le nombre de coups possibles est: "<<gameSystem._nbEligiblePlayer<<std::endl;
 			best_position_value.first = -1;
 			best_position_value.second = max_index_value.second;
 			return best_position_value;
@@ -103,7 +100,6 @@ std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played,
 		std::pair<int, int> min_index_value = min(position_value, gameSystem._nbEligiblePlayer);
 		if(min_index_value.first == -1)
 		{
-			std::cout<<"le nombre de coups possibles est: "<<gameSystem._nbEligiblePlayer<<std::endl;
 			best_position_value.first = -1;
 			return best_position_value;
 		}
@@ -115,22 +111,29 @@ std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played,
 	return best_position_value;
 }
 
+int min_max_2(GameSystem gameSystem, int player){
+	//AI algorithm 2. Returns the best position to play anticipating opponent next plays thanks to a min-max algorithm
+	//non optimized with alpha-beta pruning.
+	int depth_max = 5;
+	return min_max_recursion(gameSystem, -1, depth_max).first;
+}
+
 std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int depth_max, int& alpha, int& beta)
-{
+{	//Alpha beta pruning recursive algorithm. Return a pair (position, value of the position).
+	//depth_max doit être impair
 	std::pair<int, int> best_position_value;
 
 	if(depth_max == 0 || gameSystem._nbEligiblePlayer == 0)
 	{
+		gameSystem._playerTurn = 1-gameSystem._playerTurn;
 		best_position_value.first = position_played;
 		best_position_value.second = gameSystem.evaluate();
-		//std::cout<<"feuille position: "<<best_position_value.first<<std::endl;
-		//std::cout<<best_position_value.first<<" depth="<<depth_max<<std::endl;
 		return best_position_value;
 	}
 
-
 	GameSystem possibleSystem;
 	possibleSystem = gameSystem;
+	std::pair<int,int> possible_position_value;
 
 	if(depth_max%2 == 1)
 	{
@@ -138,25 +141,21 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 		for(int i=0; i<gameSystem._nbEligiblePlayer; ++i)
 		{
 			possibleSystem.play_position(gameSystem._eligiblePosition[i]);
-			std::pair<int,int> possible_position_value;
 			possible_position_value = alphaBeta(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1, alpha, beta);
-
 
 			if(best_position_value.second < possible_position_value.second)
 			{
 				best_position_value.first = gameSystem._eligiblePosition[i];
 				best_position_value.second = possible_position_value.second;
-				//std::cout<<best_position_value.first<<" depth="<<depth_max<<std::endl;
 			}
+			alpha = std::max(alpha, best_position_value.second);
+
 			//Beta cut
-			if(beta <= best_position_value.second)
-			{
-				best_position_value.first = gameSystem._eligiblePosition[i];
-				//std::cout<<"impaire position: "<<best_position_value.first<<std::endl;
-				return best_position_value;
-			}
+			if(alpha >= beta)
+				break;
+		
 			possibleSystem = gameSystem;
-			alpha = std::max(beta, best_position_value.second);
+			
 		}
 	}
 	else
@@ -165,7 +164,6 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 		for(int i=0; i<gameSystem._nbEligiblePlayer; ++i)
 		{
 			possibleSystem.play_position(gameSystem._eligiblePosition[i]);
-			std::pair<int,int> possible_position_value;
 			possible_position_value = alphaBeta(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1, alpha, beta);
 
 			
@@ -173,21 +171,25 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 			{
 				best_position_value.first = gameSystem._eligiblePosition[i];
 				best_position_value.second = possible_position_value.second;
-				//std::cout<<best_position_value.first<<" depth="<<depth_max<<std::endl;
 			}
-			
-			
-			if(alpha >= best_position_value.second)
-			{
-				best_position_value.first = gameSystem._eligiblePosition[i];
-				//std::cout<<"paire position: "<<best_position_value.first<<std::endl;
-				return best_position_value;
-			}
-			possibleSystem = gameSystem;
 			beta = std::min(beta, best_position_value.second);
+			
+			if(alpha >= beta)
+				break;
+
+			possibleSystem = gameSystem;
 		}
 	}
-	//std::cout<<"sortie position: "<<best_position_value.first<<std::endl;
-	//std::cout<<best_position_value.first<<" depth="<<depth_max<<std::endl;
 	return best_position_value;
+}
+
+int min_max_3(GameSystem gameSystem, int player){
+	//AI algorithm 3. Returns the best position to play anticipating opponent next plays thanks to a alpha-beta pruning
+	int depth_max = 5;
+	int alpha = -10000;
+	int beta = 10000;
+	std::pair<int, int> alphaBeta_return_value = alphaBeta(gameSystem, -1, depth_max, alpha, beta);
+	std::cout<<"Position choisie par l'IA: "<<alphaBeta_return_value.first<<std::endl;
+	std::cout<<"Valeur de cette position: "<<alphaBeta_return_value.second<<std::endl;
+	return alphaBeta_return_value.first;
 }

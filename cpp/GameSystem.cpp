@@ -208,10 +208,19 @@ void GameSystem::play_position(int position)
 	_nbOfWhite = _nbOfWhite + (1-_playerTurn);
 	this->flip(position);
 	_playerTurn = 1-_playerTurn;
-	_eligiblePosition.clear();
-	_eligiblePosition = eligible_position();
-	_nbEligiblePlayer = _eligiblePosition.size();
 	_nbEligibleOpponent = nb_eligible(1-_playerTurn);
+
+	_eligiblePosition.clear();
+
+	_nbEligiblePlayer = 0;
+	for(int j=0; j<64; ++j)
+	{
+		if(is_eligible(j, _playerTurn))
+		{
+			_eligiblePosition.push_back(j);
+			_nbEligiblePlayer += 1;
+		}
+	}
 }
 
 bool GameSystem::is_game_finished()
@@ -261,17 +270,17 @@ int GameSystem::evaluate()
 
 	//Bonus if the player wins with this board
 	if(opponent_pawns == 0)
-		bonus = bonus + 100;
+		bonus = bonus + 1000;
 	//Bonus if the player has a pawn in a corner of the board
-	int corner_bonus = 10;
+	int corner_bonus = 500;
 	bonus += ((_othellierSystem[0]==_playerTurn) +  (_othellierSystem[7]==_playerTurn) + 
 			 (_othellierSystem[56]==_playerTurn) + (_othellierSystem[63]==_playerTurn))*corner_bonus;
 	//Malus if the opponent has a pawn in corner of the board
-	int corner_opponent_malus = -10;
+	int corner_opponent_malus = -500;
 	bonus += ((_othellierSystem[0]==1-_playerTurn) +  (_othellierSystem[7]==1-_playerTurn) +
 			 (_othellierSystem[56]==1-_playerTurn) + (_othellierSystem[63]==1-_playerTurn))*corner_opponent_malus;
 	//Bonus if the opponent has a pawn in a position adjacent to a corner
-	int corner_adjacent_bonus = 5;
+	int corner_adjacent_bonus = +150;
 	bonus += ((_othellierSystem[1]==1-_playerTurn) +  (_othellierSystem[6]==1-_playerTurn) +
 			  (_othellierSystem[8]==1-_playerTurn) +  (_othellierSystem[9]==1-_playerTurn) +
 			 (_othellierSystem[14]==1-_playerTurn) + (_othellierSystem[15]==1-_playerTurn) +
@@ -279,7 +288,7 @@ int GameSystem::evaluate()
 			 (_othellierSystem[55]==1-_playerTurn) + (_othellierSystem[54]==1-_playerTurn) + 
 			 (_othellierSystem[57]==1-_playerTurn) + (_othellierSystem[62]==1-_playerTurn))*corner_adjacent_bonus;
 	//Malus if the player has a pawn in a position adjacent to a corner
-	int corner_adjacent_malus = -5;
+	int corner_adjacent_malus = -150;
 	bonus += ((_othellierSystem[1]==_playerTurn) +  (_othellierSystem[6]==_playerTurn) +
 			  (_othellierSystem[8]==_playerTurn) +  (_othellierSystem[9]==_playerTurn) +
 			 (_othellierSystem[14]==_playerTurn) + (_othellierSystem[15]==_playerTurn) +
