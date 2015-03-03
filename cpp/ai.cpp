@@ -67,7 +67,7 @@ std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played,
 
 	std::pair<int, int> best_position_value;
 
-	if(depth_max == 0)
+	if(depth_max == 0 || gameSystem._nbEligiblePlayer == 0)
 	{
 		best_position_value.first = position_played;
 		best_position_value.second = gameSystem.evaluate();
@@ -119,7 +119,7 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 {
 	std::pair<int, int> best_position_value;
 
-	if(depth_max == 0)
+	if(depth_max == 0 || gameSystem._nbEligiblePlayer == 0)
 	{
 		best_position_value.first = position_played;
 		best_position_value.second = gameSystem.evaluate();

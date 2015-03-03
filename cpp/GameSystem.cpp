@@ -236,10 +236,26 @@ bool GameSystem::is_game_finished()
 int GameSystem::evaluate()
 {
 	//Computes the grade of the board
-	int opponent_pawns = _nbOfBlack*(1-_playerTurn)+_nbOfWhite*_playerTurn;
 	int liberty_degree = _nbEligiblePlayer-_nbEligibleOpponent;
-	int grade = liberty_degree;
-
+		int opponent_pawns = _nbOfBlack*(1-_playerTurn)+_nbOfWhite*_playerTurn;
+		int player_pawns = _nbOfBlack*(_playerTurn)+_nbOfWhite*(1-_playerTurn);
+	int pawns_difference = player_pawns-opponent_pawns;
+	int weight_liberty;
+	int weight_pawns;
+	int grade;
+	if(_nbOfBlack+_nbOfWhite < 34) // First 30 plays
+		grade = liberty_degree;
+	else if(_nbOfBlack+_nbOfWhite > 56) // Last 8 plays
+		grade = pawns_difference;
+	else
+	{
+		weight_liberty = 56-(_nbOfBlack+_nbOfWhite);
+		weight_pawns = _nbOfBlack+_nbOfWhite-34;
+		grade = (weight_liberty*liberty_degree+weight_pawns*pawns_difference)/(weight_liberty+weight_pawns);
+	}
+																				//std::cout << "Grade: " << grade << std::endl;
+																				//std::cout << "Liberty_degree: " << liberty_degree << std::endl;
+																				//std::cout << "Pawns_difference: " << pawns_difference << std::endl;
 	//Compute the bonuses in addition to the grade
 	int bonus = 0;
 
@@ -254,15 +270,22 @@ int GameSystem::evaluate()
 	int corner_opponent_malus = -10;
 	bonus += ((_othellierSystem[0]==1-_playerTurn) +  (_othellierSystem[7]==1-_playerTurn) +
 			 (_othellierSystem[56]==1-_playerTurn) + (_othellierSystem[63]==1-_playerTurn))*corner_opponent_malus;
+	//Bonus if the opponent has a pawn in a position adjacent to a corner
+	int corner_adjacent_bonus = 5;
+	bonus += ((_othellierSystem[1]==1-_playerTurn) +  (_othellierSystem[6]==1-_playerTurn) +
+			  (_othellierSystem[8]==1-_playerTurn) +  (_othellierSystem[9]==1-_playerTurn) +
+			 (_othellierSystem[14]==1-_playerTurn) + (_othellierSystem[15]==1-_playerTurn) +
+			 (_othellierSystem[48]==1-_playerTurn) + (_othellierSystem[49]==1-_playerTurn) +
+			 (_othellierSystem[55]==1-_playerTurn) + (_othellierSystem[54]==1-_playerTurn) + 
+			 (_othellierSystem[57]==1-_playerTurn) + (_othellierSystem[62]==1-_playerTurn))*corner_adjacent_bonus;
 	//Malus if the player has a pawn in a position adjacent to a corner
 	int corner_adjacent_malus = -5;
 	bonus += ((_othellierSystem[1]==_playerTurn) +  (_othellierSystem[6]==_playerTurn) +
 			  (_othellierSystem[8]==_playerTurn) +  (_othellierSystem[9]==_playerTurn) +
 			 (_othellierSystem[14]==_playerTurn) + (_othellierSystem[15]==_playerTurn) +
 			 (_othellierSystem[48]==_playerTurn) + (_othellierSystem[49]==_playerTurn) +
-			 (_othellierSystem[49]==_playerTurn) + (_othellierSystem[55]==_playerTurn) +
-			 (_othellierSystem[54]==_playerTurn) + (_othellierSystem[57]==_playerTurn) +
-			 (_othellierSystem[62]==_playerTurn))*corner_adjacent_malus;
+			 (_othellierSystem[55]==_playerTurn) + (_othellierSystem[54]==_playerTurn) +
+			 (_othellierSystem[57]==_playerTurn) + (_othellierSystem[62]==_playerTurn))*corner_adjacent_malus;
 
 	return grade+bonus;
 }
