@@ -87,7 +87,7 @@ void GameWindow::playPawn(int position)
 		_gameSystem.play_position(position);
 		display_squares();
 
-														std::cout << "The contents of _eligiblePosition are:";
+														std::cout << "The content of _eligiblePosition is:";
 														for (std::vector<int>::iterator it = _gameSystem._eligiblePosition.begin(); it != _gameSystem._eligiblePosition.end(); ++it)
 															std::cout << ' ' << *it;
 														std::cout << std::endl;
@@ -156,10 +156,10 @@ void GameWindow::pass()
 }
 
 void GameWindow::computerTurn(){
-	int chosenPosition = min_max_2(_gameSystem, _gameSystem._playerTurn);
-	/*int alpha =-10000;
+	//int chosenPosition = min_max_2(_gameSystem, _gameSystem._playerTurn);
+	int alpha =-10000;
 	int beta= 10000;
-	int chosenPosition = alphaBeta(_gameSystem,-1, 5, alpha, beta).first;*/
+	int chosenPosition = alphaBeta(_gameSystem,-1, 17, alpha, beta).first;
 
 	if(chosenPosition == -1)
 		pass();

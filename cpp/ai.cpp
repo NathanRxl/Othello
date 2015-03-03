@@ -123,6 +123,8 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 	{
 		best_position_value.first = position_played;
 		best_position_value.second = gameSystem.evaluate();
+		//std::cout<<"feuille position: "<<best_position_value.first<<std::endl;
+		//std::cout<<best_position_value.first<<" depth="<<depth_max<<std::endl;
 		return best_position_value;
 	}
 
@@ -133,15 +135,24 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 	if(depth_max%2 == 1)
 	{
 		best_position_value.second = -10000;
-		int* position_value = new int [gameSystem._nbEligiblePlayer];
 		for(int i=0; i<gameSystem._nbEligiblePlayer; ++i)
 		{
 			possibleSystem.play_position(gameSystem._eligiblePosition[i]);
-			best_position_value.second = std::max(best_position_value.second, 
-				                          alphaBeta(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1, alpha, beta).second);
+			std::pair<int,int> possible_position_value;
+			possible_position_value = alphaBeta(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1, alpha, beta);
+
+
+			if(best_position_value.second < possible_position_value.second)
+			{
+				best_position_value.first = gameSystem._eligiblePosition[i];
+				best_position_value.second = possible_position_value.second;
+				//std::cout<<best_position_value.first<<" depth="<<depth_max<<std::endl;
+			}
+			//Beta cut
 			if(beta <= best_position_value.second)
 			{
 				best_position_value.first = gameSystem._eligiblePosition[i];
+				//std::cout<<"impaire position: "<<best_position_value.first<<std::endl;
 				return best_position_value;
 			}
 			possibleSystem = gameSystem;
@@ -151,20 +162,32 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 	else
 	{
 		best_position_value.second = 10000;
-		int* position_value = new int [gameSystem._nbEligiblePlayer];
 		for(int i=0; i<gameSystem._nbEligiblePlayer; ++i)
 		{
 			possibleSystem.play_position(gameSystem._eligiblePosition[i]);
-			best_position_value.second = std::min(best_position_value.second, 
-				                          alphaBeta(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1, alpha, beta).second);
+			std::pair<int,int> possible_position_value;
+			possible_position_value = alphaBeta(possibleSystem, gameSystem._eligiblePosition[i], depth_max-1, alpha, beta);
+
+			
+			if(best_position_value.second > possible_position_value.second)
+			{
+				best_position_value.first = gameSystem._eligiblePosition[i];
+				best_position_value.second = possible_position_value.second;
+				//std::cout<<best_position_value.first<<" depth="<<depth_max<<std::endl;
+			}
+			
+			
 			if(alpha >= best_position_value.second)
 			{
 				best_position_value.first = gameSystem._eligiblePosition[i];
+				//std::cout<<"paire position: "<<best_position_value.first<<std::endl;
 				return best_position_value;
 			}
 			possibleSystem = gameSystem;
 			beta = std::min(beta, best_position_value.second);
 		}
 	}
+	//std::cout<<"sortie position: "<<best_position_value.first<<std::endl;
+	//std::cout<<best_position_value.first<<" depth="<<depth_max<<std::endl;
 	return best_position_value;
 }
