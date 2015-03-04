@@ -114,11 +114,11 @@ std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played,
 int min_max_2(GameSystem gameSystem, int player){
 	//AI algorithm 2. Returns the best position to play anticipating opponent next plays thanks to a min-max algorithm
 	//non optimized with alpha-beta pruning.
-	int depth_max = 5;
+	int depth_max = 7;
 	return min_max_recursion(gameSystem, -1, depth_max).first;
 }
 
-std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int depth_max, int& alpha, int& beta)
+std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int depth_max, int alpha, int beta)
 {	//Alpha beta pruning recursive algorithm. Return a pair (position, value of the position).
 	//depth_max doit être impair
 	std::pair<int, int> best_position_value;
@@ -151,6 +151,7 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 			alpha = std::max(alpha, best_position_value.second);
 
 			//Beta cut
+			//std::cout<<"alpha="<<alpha<<"  beta="<<beta<<"  profondeur="<<depth_max<<std::endl;
 			if(alpha >= beta)
 				break;
 		
@@ -174,6 +175,7 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 			}
 			beta = std::min(beta, best_position_value.second);
 			
+			//std::cout<<"alpha="<<alpha<<"  beta="<<beta<<"  profondeur="<<depth_max<<std::endl;
 			if(alpha >= beta)
 				break;
 
@@ -185,7 +187,7 @@ std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int dep
 
 int min_max_3(GameSystem gameSystem, int player){
 	//AI algorithm 3. Returns the best position to play anticipating opponent next plays thanks to a alpha-beta pruning
-	int depth_max = 5;
+	int depth_max = 7;
 	int alpha = -10000;
 	int beta = 10000;
 	std::pair<int, int> alphaBeta_return_value = alphaBeta(gameSystem, -1, depth_max, alpha, beta);

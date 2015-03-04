@@ -53,7 +53,7 @@ GameWindow::GameWindow() : QWidget()
 
 	_newGameButton = new QPushButton("Nouvelle Partie", this);
 	QObject::connect(_newGameButton, SIGNAL(clicked()), this, SLOT(newGame(void)));
-	_newGameButton->setEnabled(false);
+	_newGameButton->setEnabled(true);
 	buttonsLayout->addWidget(_newGameButton);
 
 	buttonsGroupBox->setLayout(buttonsLayout);
@@ -98,7 +98,6 @@ void GameWindow::playPawn(int position)
 		{
 			_computerTurnButton->setEnabled(false);
 			_passButton->setEnabled(false);
-			_newGameButton->setEnabled(true);
 			if(_gameSystem._nbOfBlack>_gameSystem._nbOfWhite)
 			{
 				std::cout << "Partie terminee." << std::endl << std::endl;
@@ -136,7 +135,7 @@ void GameWindow::newGame()
 	display_squares();
 	_computerTurnButton->setEnabled(true);
 	_passButton->setEnabled(false);
-	_newGameButton->setEnabled(false);
+	_newGameButton->setEnabled(true);
 }
 
 void GameWindow::pass()
@@ -158,7 +157,7 @@ void GameWindow::pass()
 void GameWindow::computerTurn(){
 	int alpha =-10000;
 	int beta= 10000;
-	int chosenPosition = min_max_2(_gameSystem, _gameSystem._playerTurn);
+	int chosenPosition = min_max_3(_gameSystem, _gameSystem._playerTurn);
 
 	if(chosenPosition == -1)
 		pass();

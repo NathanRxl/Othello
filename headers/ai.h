@@ -16,4 +16,4 @@ int min_max_3(GameSystem gameSystem, int player);
 std::pair<int,int> min_max_recursion(GameSystem gameSystem, int position_played, int depth_max);
 //Alpha beta pruning recursive algorithm. Return a pair (position, value of the position).
 //depth_max doit être impair
-std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int depth_max, int& alpha, int& beta);
+std::pair<int,int> alphaBeta(GameSystem gameSystem, int position_played, int depth_max, int alpha, int beta);
